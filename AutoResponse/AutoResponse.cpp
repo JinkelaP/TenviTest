@@ -1,4 +1,5 @@
 #include"AutoResponse.h"
+#include"Packet.h"
 
 #pragma pack(push, 1)
 // TENVI v127
@@ -53,141 +54,77 @@ void ProcessPacketExec(std::vector<BYTE> &packet) {
 	return OnPacketDirectExec(&ip);
 }
 
+void SendPacket(ServerPacket &sp) {
+	return ProcessPacketExec(sp.get());
+}
+
 // Login Button Click
 DWORD (__thiscall *_LoginButton)(void *ecx) = NULL;
 DWORD __fastcall LoginButton_Hook(void *ecx) {
-	// Login
+	// go to World Select
 	{
-		std::vector<BYTE> ip;
-		ip.push_back(0x08); // header
-		ip.push_back(0x02);
-		ip.push_back(0x31);
-		ip.push_back(0x00);
-		ip.push_back(0x32);
-		ip.push_back(0x00);
-
-		ProcessPacketExec(ip);
+		ServerPacket p(0x08);
+		p.EncodeWStr(L"HelloWorld");
+		SendPacket(p);
 	}
-	// Character Select
+	// go to Character Select
 	{
-		std::vector<BYTE> ip;
-		ip.push_back(0x04); // header
-		ip.push_back(0x00);
-		ip.push_back(0xFF);
-		ip.push_back(0xFF);
-		ip.push_back(0xFF);
-		ip.push_back(0xFF);
-		ip.push_back(0x00);
-
-		ProcessPacketExec(ip);
+		ServerPacket p(0x04);
+		p.Encode1(0);
+		p.Encode4(-1);
+		p.Encode1(0);
+		SendPacket(p);
 	}
-	// Character Data
+	// update Character Data
 	{
-		std::vector<BYTE> ip;
-		ip.push_back(0x05);
-		ip.push_back(0x01);
-		ip.push_back(0x01);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x04);
-		ip.push_back(0x20);
-		ip.push_back(0x04);
-		ip.push_back(0xEA);
-		ip.push_back(0x30);
-		ip.push_back(0xEC);
-		ip.push_back(0x30);
-		ip.push_back(0xDF);
-		ip.push_back(0x30);
-		ip.push_back(0xC8);
-		ip.push_back(0x30);
-		ip.push_back(0x04);
-		ip.push_back(0xEA);
-		ip.push_back(0x30);
-		ip.push_back(0xEC);
-		ip.push_back(0x30);
-		ip.push_back(0xDF);
-		ip.push_back(0x30);
-		ip.push_back(0xC8);
-		ip.push_back(0x30);
-		ip.push_back(0x06);
-		ip.push_back(0x00);
-		ip.push_back(0x03);
-		ip.push_back(0x00);
-		ip.push_back(0x11);
-		ip.push_back(0x00);
-		ip.push_back(0x19);
-		ip.push_back(0x00);
-		ip.push_back(0xDF);
-		ip.push_back(0x01);
-		ip.push_back(0x9D);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x03);
-
-		ProcessPacketExec(ip);
+		ServerPacket p(0x05);
+		p.Encode1(1); // characters
+		p.Encode4(1); // ID
+		p.Encode1(4);
+		p.Encode1(30); // level
+		p.EncodeWStr(L"Riremito"); // name
+		p.EncodeWStr(L"str");
+		p.Encode2(6);
+		p.Encode2(3);
+		p.Encode2(17);
+		p.Encode2(25);
+		p.Encode2(479);
+		p.Encode2(157);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(0);
+		p.Encode2(2001); // mapid
+		p.Encode1(3); // character slots
+		SendPacket(p);
 	}
+
 	return 0;
 }
 
@@ -201,72 +138,37 @@ DWORD __fastcall CharacterSelectButton_Hook(void *ecx, void *edx, DWORD id, DWOR
 
 	// Game Start
 	{
-		std::vector<BYTE> ip;
-		ip.push_back(0x0C); // header
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-
-		ProcessPacketExec(ip);
+		ServerPacket p(0x0C);
+		p.Encode1(0);
+		p.Encode4(0);
+		p.Encode2(0);
+		p.Encode4(0);
+		p.Encode4(0);
+		SendPacket(p);
 	}
 
 	// In Game test
 	{
-		std::vector<BYTE> ip;
-		ip.push_back(0x0E); // header
-		ip.push_back(0x00);
-
-		ProcessPacketExec(ip);
+		ServerPacket p(0x0E);
+		p.Encode1(0);
+		SendPacket(p);
 	}
 
 	// Enter Map test
 	{
-		std::vector<BYTE> ip;
-		ip.push_back(0x10); // header
-		ip.push_back(0x00);
-		ip.push_back(0xD1);
-		ip.push_back(0x07);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-		ip.push_back(0x00);
-
-		ProcessPacketExec(ip);
+		ServerPacket p(0x10);
+		p.Encode1(0);
+		p.Encode2(2001); // mapid
+		p.Encode1(0);
+		p.Encode4(0);
+		p.Encode4(0); // float value
+		p.Encode4(0); // float value
+		p.Encode1(0);
+		p.Encode1(0);
+		p.Encode1(0);
+		p.Encode1(0);
+		p.Encode4(0);
+		SendPacket(p);
 	}
 	return ret;
 }
