@@ -16,6 +16,10 @@ bool OnCreate(Alice &a) {
 	return true;
 }
 
+void CreatePacketBuffer(std::wstring wInput, std::wstring &wOutput) {
+
+}
+
 bool OnCommand(Alice &a, int nIDDlgItem) {
 
 	if (nIDDlgItem == BUTTON_TEST) {
@@ -28,6 +32,16 @@ bool OnCommand(Alice &a, int nIDDlgItem) {
 		else {
 			wText = L"parse error";
 		}
+
+		/*
+		ServerPacket p(0x00);
+		p.Encode4(-1);
+		p.Encode2(1);
+		p.EncodeWStr(L"Riremito");
+
+		std::vector<BYTE> &packet = p.get();
+		wText = L"@" + DatatoString(&packet[0], packet.size(), true);
+		*/
 
 		a.SetText(EDIT_OUTPUT, wText);
 		return true;

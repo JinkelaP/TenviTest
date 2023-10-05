@@ -5,6 +5,10 @@ ServerPacket::ServerPacket(BYTE header) {
 	Encode1(header);
 }
 
+ServerPacket::ServerPacket() {
+	// for formatter
+}
+
 std::vector<BYTE>& ServerPacket::get() {
 	return packet;
 }

@@ -11,6 +11,7 @@ private:
 
 public:
 	ServerPacket(BYTE header);
+	ServerPacket();
 
 	std::vector<BYTE>& get();
 	void Encode1(BYTE val);

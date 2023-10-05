@@ -4,22 +4,23 @@
 #include<Windows.h>
 #include<string>
 #include<regex>
+#include"Packet.h"
 
 class Frost {
 private:
-	std::wstring text_original;
-	std::wstring text_debug;
+	//std::wstring input;
+	std::vector<std::wstring> input_list;
+	ServerPacket p;
 
-	bool Encode1();
-	bool Encode2();
-	bool Encode4();
-	bool EncodeStr();
-	bool EncodeWStr();
+	bool DataParse(std::wstring data, ULONGLONG &uData);
+	bool WStrParse(std::wstring data, std::wstring &wData);
+	bool Parse(std::wstring input);
+
 public:
 	Frost(std::wstring wScript);
 	~Frost();
-	bool Parse();
 	std::wstring GetText();
+	bool Parse();
 };
 
 #endif
