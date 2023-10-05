@@ -93,7 +93,7 @@ DWORD __fastcall LoginButton_Hook(void *ecx) {
 		p.Encode2(0);
 		p.Encode2(0);
 		p.Encode2(0);
-		p.Encode2(2001); // mapid
+		p.Encode2(2002); // mapid
 		p.Encode1(3); // character slots
 		SendPacket(p);
 	}
@@ -131,7 +131,7 @@ DWORD __fastcall CharacterSelectButton_Hook(void *ecx, void *edx, DWORD id, DWOR
 	{
 		ServerPacket p(0x10);
 		p.Encode1(0);
-		p.Encode2(2001); // mapid
+		p.Encode2(2002); // mapid
 		p.Encode1(0);
 		p.Encode4(0);
 		p.Encode4(0); // float value
@@ -142,6 +142,93 @@ DWORD __fastcall CharacterSelectButton_Hook(void *ecx, void *edx, DWORD id, DWOR
 		p.Encode1(0);
 		p.Encode4(0);
 		SendPacket(p);
+	}
+	// Spawn Character test
+	{
+		ServerPacket sp(SP_CHARACTER_SPAWN);
+		sp.Encode4(0); // 0048DB9B
+		sp.Encode4(0); // 0048DBA5
+		sp.Encode4(0); // 0048DBAF
+		sp.Encode1(0); // 0048DBB9
+		sp.Encode1(0); // 0048DBC6
+		sp.Encode1(1); // 0048DBD3, death
+		sp.Encode1(0); // 0048DBE0
+		sp.Encode4(1); // 0048DBFB
+		sp.Encode1(36); // 0048DC08
+		sp.Encode1(10); // 0048DC2B
+		sp.EncodeWStr(L"ƒVƒ‹ƒ”ƒ@"); // name
+		sp.EncodeWStr(L"GUARDIAN"); // guardian name
+		sp.Encode1(0); // 0048DC8F
+		sp.Encode1(1); // 0048DC9C
+		sp.Encode2(6); // 0048DCA9
+		sp.Encode2(3); // 0048DCB7
+		sp.Encode2(19); // 0048DCC5
+		sp.Encode2(24); // 0048DCD3
+		sp.Encode2(478); // 0048DCE1
+		sp.Encode2(156); // 0048DCEF
+		sp.Encode1(0); // 0048DCFD
+
+		/*
+		for (int i = 0; i < 30; i++) {
+			sp.Encode8(0);
+			sp.Encode2(0);
+		}
+		*/
+		for (int i = 0; i < 15; i++) {
+			sp.Encode8(0);
+			sp.Encode2(0);
+		}
+		for (int i = 0; i < 15; i++) {
+			sp.Encode8(0);
+			sp.Encode2(0);
+		}
+
+		sp.Encode2(0); // 0048DDC3
+		sp.Encode2(0); // 0048DDD1
+		sp.Encode2(0); // 0048DDE1
+		sp.Encode2(0); // 0048DDF1
+		sp.Encode2(0); // 0048DE01
+		sp.Encode1(0); // 0048DE11
+		sp.Encode1(0); // 0048DE21
+		sp.Encode1(0); // 0048DE35
+		sp.EncodeWStr(L"TEST1"); // guild
+		sp.Encode1(0); // 0057B508
+		sp.Encode1(0); // 0057B515
+		sp.Encode1(0); // 0057B522
+		sp.Encode1(0); // 0057B52F
+		sp.Encode1(0); // 0057B53C
+		sp.Encode1(0); // 0057B549
+		sp.Encode1(0); // 0048DE7F
+		sp.Encode1(0); // 0048DE8C
+		sp.Encode1(0); // 0048DE9F
+		sp.Encode1(0); // 0048DEAC
+		sp.Encode1(0); // 0048DEB9
+		sp.Encode1(0); // 0048E4F3
+		sp.Encode4(0); // 0048E513
+		sp.Encode1(0); // 0048E51D
+		sp.Encode1(0); // 0048E5F9
+		sp.Encode1(0); // 0048E60D
+		sp.Encode1(0); // 0048E621
+		sp.Encode4(0); // 0048E6A1
+		sp.Encode2(0); // 0048E6AB
+		sp.Encode4(0); // 0048E6C7
+		sp.Encode4(0); // 0048E6D1
+		sp.Encode4(0); // 0048E6DB
+		sp.Encode4(0); // 0048E6E5
+		sp.Encode4(0); // 0048E6EF
+		sp.Encode1(0); // 0048E6F9
+		sp.Encode1(0); // 0048E706
+		sp.Encode4(0); // 0048E713
+		sp.Encode4(0); // 0048E71D
+		sp.Encode4(0); // 0048E727
+		sp.Encode4(0); // 0048E731
+		sp.EncodeWStr(L"TEST2"); // 0048E73F
+		sp.Encode2(0); // 0048E74A
+		sp.Encode2(0); // 0048E757
+		sp.EncodeWStr(L"TEST3"); // 0048E768
+		sp.Encode1(0); // 0048E773
+		sp.Encode1(0); // 0048E780
+		SendPacket(sp);
 	}
 	return ret;
 }

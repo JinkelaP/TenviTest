@@ -29,7 +29,7 @@ bool FakeServer(ClientPacket &cp) {
 		{
 			ServerPacket sp(SP_CHARACTER_LIST);
 			sp.Encode1(1); // characters
-			sp.Encode4(2); // ID
+			sp.Encode4(1234); // ID
 			sp.Encode1(job_mask); // job + gender
 			sp.Encode1(10); // level
 			sp.EncodeWStr(character_name); // name
@@ -48,7 +48,7 @@ bool FakeServer(ClientPacket &cp) {
 				sp.Encode2(g_equip);
 			}
 
-			sp.Encode2(2001); // mapid
+			sp.Encode2(2002); // mapid
 			sp.Encode1(3); // character slots
 			SendPacket(sp);
 		}
