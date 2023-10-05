@@ -1,5 +1,7 @@
-#ifndef __PACKET_H__
-#define __PACKET_H__
+#ifndef __SERVERPACKET_H__
+#define __SERVERPACKET_H__
+
+// Server to Client (Recv, In)
 
 #include<Windows.h>
 #include<string>

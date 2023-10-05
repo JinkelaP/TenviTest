@@ -149,12 +149,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AutoResponse.cpp" />
+    <ClCompile Include="ClientPacket.cpp" />
     <ClCompile Include="DllMain.cpp" />
-    <ClCompile Include="Packet.cpp" />
+    <ClCompile Include="FakeServer.cpp" />
+    <ClCompile Include="ServerPacket.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AutoResponse.h" />
-    <ClInclude Include="Packet.h" />
+    <ClInclude Include="ClientPacket.h" />
+    <ClInclude Include="FakeServer.h" />
+    <ClInclude Include="ServerPacket.h" />
+    <ClInclude Include="TenviPacket.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

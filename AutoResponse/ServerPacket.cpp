@@ -1,4 +1,4 @@
-#include"Packet.h"
+#include"ServerPacket.h"
 
 // header = byte
 ServerPacket::ServerPacket(BYTE header) {
@@ -25,15 +25,15 @@ void ServerPacket::Encode4(DWORD val) {
 
 // legnth = byte
 void ServerPacket::EncodeWStr(std::wstring val) {
-	Encode1(val.length());
+	Encode1((BYTE)val.length());
 	for (size_t i = 0; i < val.length(); i++) {
 		Encode2((WORD)val.at(i));
 	}
 }
 
 void ServerPacket::Encode8(ULONGLONG val) {
-	Encode4(val);
-	Encode4(val >> 32);
+	Encode4((DWORD)val);
+	Encode4((DWORD)(val >> 32));
 }
 
 void ServerPacket::EncodeFloat(float val) {

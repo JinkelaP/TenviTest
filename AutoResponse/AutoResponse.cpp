@@ -1,31 +1,4 @@
 #include"AutoResponse.h"
-#include"Packet.h"
-
-#pragma pack(push, 1)
-// TENVI v127
-typedef struct {
-	DWORD unk1; // 0x00
-	BYTE *packet;
-	DWORD unk3; // 0x100
-	DWORD unk4; // 0x100
-	DWORD unk5; // 0x0
-	DWORD encoded;
-} OutPacket;
-
-typedef struct {
-	DWORD unk1; // 0
-	DWORD unk2; // 4
-	BYTE *packet; // +0x08
-	DWORD unk4; // C
-	DWORD unk5; // 10
-	DWORD unk6; // 14
-	WORD length; // + 0x18 ???
-	WORD unk8; // 1A
-	DWORD unk9; // 1C
-	DWORD decoded; // +0x20
-	DWORD unk10;
-} InPacket;
-#pragma pack(pop)
 
 // ignore packet encryption
 void OnPacketDirectExec(InPacket *p) {
@@ -49,7 +22,7 @@ void ProcessPacketExec(std::vector<BYTE> &packet) {
 	ip.unk4 = 1; // always 1
 	ip.decoded = 4; // ignore first 4 bytes
 	ip.packet = &buffer[0]; // real buffer
-	ip.length = buffer.size(); // real buffer size
+	ip.length = (WORD)buffer.size(); // real buffer size
 
 	return OnPacketDirectExec(&ip);
 }
@@ -173,10 +146,21 @@ DWORD __fastcall CharacterSelectButton_Hook(void *ecx, void *edx, DWORD id, DWOR
 	return ret;
 }
 
+void(__thiscall *_EnterSendPacket)(OutPacket *) = NULL;
+void __fastcall EnterSendPacket_Hook(OutPacket *op) {
+	// save packet data
+	ClientPacket cp(op->packet, op->encoded);
+	// execute original send packet
+	_EnterSendPacket(op);
+	// fake server request
+	FakeServer(cp);
+}
+
 // ([0-9A-F]{2})
 // ip.push_back(0x$1);\n
 bool AutoResponseHook() {
 	SHookFunction(LoginButton, 0x0052E43B);
 	SHookFunction(CharacterSelectButton, 0x00531430);
+	SHookFunction(EnterSendPacket, 0x0055F2A8);
 	return true;
 }

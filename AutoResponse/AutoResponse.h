@@ -3,7 +3,12 @@
 
 #include"../Share/Simple/Simple.h"
 #include"../Share/Hook/SimpleHook.h"
+#include"TenviPacket.h"
+#include"ClientPacket.h"
+#include"ServerPacket.h"
+#include"FakeServer.h"
 
 bool AutoResponseHook();
+void SendPacket(ServerPacket &sp);
 
 #endif

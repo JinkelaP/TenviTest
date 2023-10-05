@@ -127,7 +127,7 @@ bool Frost::Parse(std::wstring input) {
 		if (!DataParse(data, val)) {
 			return false;
 		}
-		p.Encode1(val);
+		p.Encode1((BYTE)val);
 		return true;
 	}
 	case TYPE_WORD:
@@ -136,7 +136,7 @@ bool Frost::Parse(std::wstring input) {
 		if (!DataParse(data, val)) {
 			return false;
 		}
-		p.Encode2(val);
+		p.Encode2((WORD)val);
 		return true;
 	}
 	case TYPE_DWORD:
@@ -145,7 +145,7 @@ bool Frost::Parse(std::wstring input) {
 		if (!DataParse(data, val)) {
 			return false;
 		}
-		p.Encode4(val);
+		p.Encode4((DWORD)val);
 		return true;
 	}
 	case TYPE_QWORD:
