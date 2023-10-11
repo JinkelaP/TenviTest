@@ -5,6 +5,24 @@ bool FakeServer(ClientPacket &cp) {
 	CLIENTPACKET header = (CLIENTPACKET)cp.Decode1();
 
 	switch (header) {
+	/*
+	case CP_GAME_START: {
+		DWORD character_id = cp.Decode4();
+		BYTE unk = cp.Decode1();
+
+		{
+			ServerPacket sp(SP_GOTO_GAME_FROM_LOGIN);
+			sp.Encode1(0); // error code
+			sp.Encode4(0x0100007F); // IP
+			sp.Encode2(8787); // port
+			sp.Encode4(0);
+			sp.Encode4(0);
+			SendPacket(sp);
+		}
+
+		return true;
+	}
+	*/
 	// Login
 	case CP_CREATE_CHARACTER: {
 		std::wstring character_name = cp.DecodeWStr();

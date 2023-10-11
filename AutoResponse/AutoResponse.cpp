@@ -1,8 +1,42 @@
 #include"AutoResponse.h"
 
+#define REGION_JP 0
+#define REGION_CN 1
+#define REGION_HK 2
+#define REGION_KR 3
+
+#define REGION REGION_JP
+
+#if REGION == REGION_JP
+#define Addr_EnterSendPacket 0x0055F2A8
+#define Addr_OnPacketClass 0x006DB164
+#define Addr_LoginButton 0x0052E43B
+#define Addr_CharacterSelectButton 0x00531430
+#define Addr_CharacterLoginButonOffset 0x1BC
+#elif REGION == REGION_CN
+#define Addr_EnterSendPacket 0x0056AADB
+#define Addr_OnPacketClass 0x006FAF44
+#define Addr_LoginButton 0x00532FEF
+#define Addr_CharacterSelectButton 0x00535F02
+#define Addr_CharacterLoginButonOffset 0x1BC
+#elif REGION == REGION_HK
+#define Addr_EnterSendPacket 0x005AC927
+#define Addr_OnPacketClass 0x0075CF84
+#define Addr_LoginButton 0x0052CFC2
+#define Addr_CharacterSelectButton 0x0053009D
+#define Addr_CharacterLoginButonOffset 0x1B8
+#elif REGION == REGION_KR
+#define Addr_EnterSendPacket 0x005CBA0F
+#define Addr_OnPacketClass 0x0075E184
+#define Addr_LoginButton 0x0059E240 // NG
+#define Addr_CharacterSelectButton 0x005403A3 // test
+#define Addr_CharacterLoginButonOffset 0x1B8
+#endif
+
+
 // ignore packet encryption
 void OnPacketDirectExec(InPacket *p) {
-	void *OnPacketClass = (void *)(*(DWORD *)(*(DWORD *)0x006DB164 + 0x160));
+	void *OnPacketClass = (void *)(*(DWORD *)(*(DWORD *)Addr_OnPacketClass + 0x160));
 	void (__thiscall *_OnPacket)(void *ecx, InPacket *p) = (decltype(_OnPacket)(*(DWORD *)(*(DWORD *)OnPacketClass + 0x2C)));
 	_OnPacket(OnPacketClass, p);
 }
@@ -105,7 +139,7 @@ DWORD (__thiscall *_CharacterSelectButton)(void *, DWORD, DWORD) = NULL;
 DWORD __fastcall CharacterSelectButton_Hook(void *ecx, void *edx, DWORD id, DWORD UI) {
 	DWORD ret = _CharacterSelectButton(ecx, id, UI);
 
-	if (!(id == 257 && UI == *(DWORD *)((DWORD)ecx + 0x1BC))) {
+	if (!(id == 257 && UI == *(DWORD *)((DWORD)ecx + Addr_CharacterLoginButonOffset))) {
 		return ret;
 	}
 
@@ -146,16 +180,19 @@ DWORD __fastcall CharacterSelectButton_Hook(void *ecx, void *edx, DWORD id, DWOR
 	// Spawn Character test
 	{
 		ServerPacket sp(SP_CHARACTER_SPAWN);
-		sp.Encode4(0); // 0048DB9B
-		sp.Encode4(0); // 0048DBA5
-		sp.Encode4(0); // 0048DBAF
-		sp.Encode1(0); // 0048DBB9
-		sp.Encode1(0); // 0048DBC6
-		sp.Encode1(1); // 0048DBD3, death
-		sp.Encode1(0); // 0048DBE0
+		sp.Encode4(0); // 0048DB9B id
+		sp.Encode4(0); // 0048DBA5 x
+		sp.Encode4(0); // 0048DBAF y
+		sp.Encode1(0); // 0048DBB9 direction
+		sp.Encode1(1); // 0048DBC6 guardian
+		sp.Encode1(1); // 0048DBD3 death
+		sp.Encode1(1); // 0048DBE0 guardian gasping
 		sp.Encode4(1); // 0048DBFB
 		sp.Encode1(36); // 0048DC08
 		sp.Encode1(10); // 0048DC2B
+#if REGION == REGION_HK
+		sp.Encode1(1);
+#endif
 		sp.EncodeWStr(L"ƒVƒ‹ƒ”ƒ@"); // name
 		sp.EncodeWStr(L"GUARDIAN"); // guardian name
 		sp.Encode1(0); // 0048DC8F
@@ -168,12 +205,6 @@ DWORD __fastcall CharacterSelectButton_Hook(void *ecx, void *edx, DWORD id, DWOR
 		sp.Encode2(156); // 0048DCEF
 		sp.Encode1(0); // 0048DCFD
 
-		/*
-		for (int i = 0; i < 30; i++) {
-			sp.Encode8(0);
-			sp.Encode2(0);
-		}
-		*/
 		for (int i = 0; i < 15; i++) {
 			sp.Encode8(0);
 			sp.Encode2(0);
@@ -188,9 +219,11 @@ DWORD __fastcall CharacterSelectButton_Hook(void *ecx, void *edx, DWORD id, DWOR
 		sp.Encode2(0); // 0048DDE1
 		sp.Encode2(0); // 0048DDF1
 		sp.Encode2(0); // 0048DE01
+#if REGION != REGION_HK
 		sp.Encode1(0); // 0048DE11
 		sp.Encode1(0); // 0048DE21
 		sp.Encode1(0); // 0048DE35
+#endif
 		sp.EncodeWStr(L"TEST1"); // guild
 		sp.Encode1(0); // 0057B508
 		sp.Encode1(0); // 0057B515
@@ -228,6 +261,10 @@ DWORD __fastcall CharacterSelectButton_Hook(void *ecx, void *edx, DWORD id, DWOR
 		sp.EncodeWStr(L"TEST3"); // 0048E768
 		sp.Encode1(0); // 0048E773
 		sp.Encode1(0); // 0048E780
+#if REGION == REGION_HK
+		sp.Encode1(0);
+		sp.Encode1(0);
+#endif
 		SendPacket(sp);
 	}
 	return ret;
@@ -246,8 +283,8 @@ void __fastcall EnterSendPacket_Hook(OutPacket *op) {
 // ([0-9A-F]{2})
 // ip.push_back(0x$1);\n
 bool AutoResponseHook() {
-	SHookFunction(LoginButton, 0x0052E43B);
-	SHookFunction(CharacterSelectButton, 0x00531430);
-	SHookFunction(EnterSendPacket, 0x0055F2A8);
+	SHookFunction(LoginButton, Addr_LoginButton);
+	SHookFunction(CharacterSelectButton, Addr_CharacterSelectButton);
+	SHookFunction(EnterSendPacket, Addr_EnterSendPacket);
 	return true;
 }
