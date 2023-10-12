@@ -5,7 +5,7 @@
 #define REGION_HK 2
 #define REGION_KR 3
 
-#define REGION REGION_JP
+#define REGION REGION_KR
 
 #if REGION == REGION_JP
 #define Addr_EnterSendPacket 0x0055F2A8
@@ -28,8 +28,8 @@
 #elif REGION == REGION_KR
 #define Addr_EnterSendPacket 0x005CBA0F
 #define Addr_OnPacketClass 0x0075E184
-#define Addr_LoginButton 0x0059E240 // NG
-#define Addr_CharacterSelectButton 0x005403A3 // test
+#define Addr_LoginButton 0x004767A3 // login error dialog
+#define Addr_CharacterSelectButton 0x0054327B // test
 #define Addr_CharacterLoginButonOffset 0x1B8
 #endif
 
@@ -66,8 +66,13 @@ void SendPacket(ServerPacket &sp) {
 }
 
 // Login Button Click
+#if REGION == REGION_KR
+DWORD(__thiscall *_LoginButton)(void *ecx, void *, void *, void *) = NULL;
+DWORD __fastcall LoginButton_Hook(void *ecx, void *, void *, void *) {
+#else
 DWORD (__thiscall *_LoginButton)(void *ecx) = NULL;
 DWORD __fastcall LoginButton_Hook(void *ecx) {
+#endif
 	// go to World Select
 	{
 		ServerPacket p(0x08);
@@ -190,7 +195,7 @@ DWORD __fastcall CharacterSelectButton_Hook(void *ecx, void *edx, DWORD id, DWOR
 		sp.Encode4(1); // 0048DBFB
 		sp.Encode1(36); // 0048DC08
 		sp.Encode1(10); // 0048DC2B
-#if REGION == REGION_HK
+#if REGION == REGION_HK || REGION == REGION_KR
 		sp.Encode1(1);
 #endif
 		sp.EncodeWStr(L"ƒVƒ‹ƒ”ƒ@"); // name
@@ -219,7 +224,7 @@ DWORD __fastcall CharacterSelectButton_Hook(void *ecx, void *edx, DWORD id, DWOR
 		sp.Encode2(0); // 0048DDE1
 		sp.Encode2(0); // 0048DDF1
 		sp.Encode2(0); // 0048DE01
-#if REGION != REGION_HK
+#if REGION == REGION_JP || REGION == REGION_CN
 		sp.Encode1(0); // 0048DE11
 		sp.Encode1(0); // 0048DE21
 		sp.Encode1(0); // 0048DE35
@@ -261,7 +266,7 @@ DWORD __fastcall CharacterSelectButton_Hook(void *ecx, void *edx, DWORD id, DWOR
 		sp.EncodeWStr(L"TEST3"); // 0048E768
 		sp.Encode1(0); // 0048E773
 		sp.Encode1(0); // 0048E780
-#if REGION == REGION_HK
+#if REGION == REGION_HK || REGION == REGION_KR
 		sp.Encode1(0);
 		sp.Encode1(0);
 #endif
