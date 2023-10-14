@@ -22,7 +22,7 @@ DWORD ClientPacket::Decode4() {
 	return val;
 }
 
-std::wstring ClientPacket::DecodeWStr() {
+std::wstring ClientPacket::DecodeWStr1() {
 	BYTE length = Decode1();
 	std::vector<WCHAR> wstr;
 
@@ -31,8 +31,18 @@ std::wstring ClientPacket::DecodeWStr() {
 	}
 	wstr.push_back(L'\0');
 
-	//std::wstring val = std::wstring(*(WCHAR *)&packet[decoded], length);
-	//decoded += length * sizeof(WCHAR);
+	return std::wstring(&wstr[0]);
+}
+
+std::wstring ClientPacket::DecodeWStr2() {
+	WORD length = Decode2();
+	std::vector<WCHAR> wstr;
+
+	for (size_t i = 0; i < length; i++) {
+		wstr.push_back(Decode2());
+	}
+	wstr.push_back(L'\0');
+
 	return std::wstring(&wstr[0]);
 }
 

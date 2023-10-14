@@ -28,8 +28,14 @@ void ServerPacket::Encode4(DWORD val) {
 }
 
 // legnth = byte
-void ServerPacket::EncodeWStr(std::wstring val) {
+void ServerPacket::EncodeWStr1(std::wstring val) {
 	Encode1((BYTE)val.length());
+	for (size_t i = 0; i < val.length(); i++) {
+		Encode2((WORD)val.at(i));
+	}
+}
+void ServerPacket::EncodeWStr2(std::wstring val) {
+	Encode2((WORD)val.length());
 	for (size_t i = 0; i < val.length(); i++) {
 		Encode2((WORD)val.at(i));
 	}

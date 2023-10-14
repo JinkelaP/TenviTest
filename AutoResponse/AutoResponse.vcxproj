@@ -152,7 +152,6 @@
     <ClCompile Include="ClientPacket.cpp" />
     <ClCompile Include="DllMain.cpp" />
     <ClCompile Include="FakeServer.cpp" />
-    <ClCompile Include="FakeServerResponse.cpp" />
     <ClCompile Include="ServerPacket.cpp" />
   </ItemGroup>
   <ItemGroup>

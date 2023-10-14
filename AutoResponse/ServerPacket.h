@@ -18,7 +18,8 @@ public:
 	void Encode1(BYTE val);
 	void Encode2(WORD val);
 	void Encode4(DWORD val);
-	void EncodeWStr(std::wstring val);
+	void EncodeWStr1(std::wstring val);
+	void EncodeWStr2(std::wstring val);
 	void Encode8(ULONGLONG val);
 	void EncodeFloat(float val);
 };

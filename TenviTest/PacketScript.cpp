@@ -25,7 +25,8 @@ enum FORMAT_TYPE {
 	TYPE_BYTE,
 	TYPE_WORD,
 	TYPE_DWORD,
-	TYPE_WSTR,
+	TYPE_WSTR1,
+	TYPE_WSTR2,
 	TYPE_QWORD,
 	TYPE_FLOAT,
 };
@@ -105,8 +106,12 @@ bool Frost::Parse(std::wstring input) {
 		type = TYPE_QWORD;
 		data = match[2];
 	}
-	else if (std::regex_search(input, match, std::wregex(LR"(^\s*(EncodeWStr)\s*\((.*)\))")) && match.size() >= 2) {
-		type = TYPE_WSTR;
+	else if (std::regex_search(input, match, std::wregex(LR"(^\s*(EncodeWStr1)\s*\((.*)\))")) && match.size() >= 2) {
+		type = TYPE_WSTR1;
+		data = match[2];
+	}
+	else if (std::regex_search(input, match, std::wregex(LR"(^\s*(EncodeWStr2)\s*\((.*)\))")) && match.size() >= 2) {
+		type = TYPE_WSTR2;
 		data = match[2];
 	}
 	else {
@@ -158,10 +163,16 @@ bool Frost::Parse(std::wstring input) {
 		return true;
 	}
 	//case TYPE_FLOAT:
-	case TYPE_WSTR: {
+	case TYPE_WSTR1: {
 		std::wstring val;
 		WStrParse(data, val);
-		p.EncodeWStr(val);
+		p.EncodeWStr1(val);
+		return true;
+	}
+	case TYPE_WSTR2: {
+		std::wstring val;
+		WStrParse(data, val);
+		p.EncodeWStr2(val);
 		return true;
 	}
 	default:

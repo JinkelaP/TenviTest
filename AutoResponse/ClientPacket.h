@@ -18,7 +18,8 @@ public:
 	BYTE Decode1();
 	WORD Decode2();
 	DWORD Decode4();
-	std::wstring DecodeWStr();
+	std::wstring DecodeWStr1();
+	std::wstring DecodeWStr2();
 	ULONGLONG Decode8();
 	float DecodeFloat();
 };
