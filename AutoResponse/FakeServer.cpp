@@ -1,6 +1,8 @@
 #include"FakeServer.h"
 #include"AutoResponse.h"
+#include"TemporaryData.h"
 
+TenviAccount TA;
 // ========== TENVI Packet Response ==========
 #define TENVI_VERSION 0x1023
 
@@ -41,50 +43,32 @@ void CharacterListPacket() {
 
 void CharacterListPacket_Test() {
 	ServerPacket sp(SP_CHARACTER_LIST);
-	sp.Encode1(1); // characters
-	sp.Encode4(1); // ID
-	sp.Encode1(4);
-	sp.Encode1(30); // level
-	sp.EncodeWStr1(L"Riremito"); // name
-	sp.EncodeWStr1(L"str");
-	sp.Encode2(6);
-	sp.Encode2(3);
-	sp.Encode2(17);
-	sp.Encode2(25);
-	sp.Encode2(479);
-	sp.Encode2(157);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(0);
-	sp.Encode2(2002); // mapid
-	sp.Encode1(3); // character slots
+
+	sp.Encode1(TA.GetCharacters().size()); // characters
+	for (auto &chr : TA.GetCharacters()) {
+		sp.Encode4(chr.id); // ID
+		sp.Encode1(chr.job_mask);
+		sp.Encode1(chr.level); // level
+		sp.EncodeWStr1(chr.name); // name
+		sp.EncodeWStr1(L"");
+		sp.Encode2(chr.job);
+		sp.Encode2(chr.skin);
+		sp.Encode2(chr.hair);
+		sp.Encode2(chr.face);
+		sp.Encode2(chr.cloth);
+		sp.Encode2(chr.gcolor);
+		// character equip, max 15
+		for (int i = 0; i < 15; i++) {
+			sp.Encode2(0);
+		}
+		// guardian equip, max 15
+		for (auto gequip : chr.gequipped) {
+			sp.Encode2(gequip);
+		}
+		sp.Encode2(chr.map); // mapid
+	}
+
+	sp.Encode1(TA.slot); // character slots
 	SendPacket(sp);
 }
 
@@ -159,7 +143,7 @@ void ConnectedPacket() {
 }
 
 // 0x10
-void ChangeMapPacket(int mapid) {
+void ChangeMapPacket(WORD mapid) {
 	ServerPacket sp(SP_MAP_CHANGE);
 	sp.Encode1(0);
 	sp.Encode2(mapid); // mapid
@@ -176,9 +160,9 @@ void ChangeMapPacket(int mapid) {
 }
 
 // 0x11
-void CharacterSpawn() {
+void CharacterSpawn(TenviCharacter &chr) {
 	ServerPacket sp(SP_CHARACTER_SPAWN);
-	sp.Encode4(0); // 0048DB9B id
+	sp.Encode4(0); // 0048DB9B id, where checks id?
 	sp.Encode4(0); // 0048DBA5 x
 	sp.Encode4(0); // 0048DBAF y
 	sp.Encode1(0); // 0048DBB9 direction
@@ -186,30 +170,32 @@ void CharacterSpawn() {
 	sp.Encode1(1); // 0048DBD3 death
 	sp.Encode1(1); // 0048DBE0 guardian gasping
 	sp.Encode4(1); // 0048DBFB
-	sp.Encode1(36); // 0048DC08
-	sp.Encode1(10); // 0048DC2B
+	sp.Encode1(chr.job_mask); // 0048DC08
+	sp.Encode1(chr.level); // 0048DC2B
 #if REGION == REGION_HK || REGION == REGION_KR
 	sp.Encode1(1);
 #endif
-	sp.EncodeWStr1(L"ƒVƒ‹ƒ”ƒ@"); // name
-	sp.EncodeWStr1(L"GUARDIAN"); // guardian name
+	sp.EncodeWStr1(chr.name); // name
+	sp.EncodeWStr1(L""); // guardian name
 	sp.Encode1(0); // 0048DC8F
 	sp.Encode1(1); // 0048DC9C
-	sp.Encode2(6); // 0048DCA9
-	sp.Encode2(3); // 0048DCB7
-	sp.Encode2(19); // 0048DCC5
-	sp.Encode2(24); // 0048DCD3
-	sp.Encode2(478); // 0048DCE1
-	sp.Encode2(156); // 0048DCEF
+	sp.Encode2(chr.job); // 0048DCA9
+	sp.Encode2(chr.skin); // 0048DCB7
+	sp.Encode2(chr.hair); // 0048DCC5
+	sp.Encode2(chr.face); // 0048DCD3
+	sp.Encode2(chr.cloth); // 0048DCE1
+	sp.Encode2(chr.gcolor); // 0048DCEF
 	sp.Encode1(0); // 0048DCFD
 
 	for (int i = 0; i < 15; i++) {
 		sp.Encode8(0);
 		sp.Encode2(0);
 	}
-	for (int i = 0; i < 15; i++) {
+
+	// fixed size (15)
+	for (auto gequip : chr.gequipped) {
 		sp.Encode8(0);
-		sp.Encode2(0);
+		sp.Encode2(gequip);
 	}
 
 	sp.Encode2(0); // 0048DDC3
@@ -222,7 +208,7 @@ void CharacterSpawn() {
 	sp.Encode1(0); // 0048DE21
 	sp.Encode1(0); // 0048DE35
 #endif
-	sp.EncodeWStr1(L"TEST1"); // guild
+	sp.EncodeWStr1(L""); // guild
 	sp.Encode1(0); // 0057B508
 	sp.Encode1(0); // 0057B515
 	sp.Encode1(0); // 0057B522
@@ -253,10 +239,10 @@ void CharacterSpawn() {
 	sp.Encode4(0); // 0048E71D
 	sp.Encode4(0); // 0048E727
 	sp.Encode4(0); // 0048E731
-	sp.EncodeWStr1(L"TEST2"); // 0048E73F
+	sp.EncodeWStr1(L""); // 0048E73F
 	sp.Encode2(0); // 0048E74A
 	sp.Encode2(0); // 0048E757
-	sp.EncodeWStr1(L"TEST3"); // 0048E768
+	sp.EncodeWStr1(L""); // 0048E768
 	sp.Encode1(0); // 0048E773
 	sp.Encode1(0); // 0048E780
 #if REGION == REGION_HK || REGION == REGION_KR
@@ -276,11 +262,18 @@ bool FakeServer(ClientPacket &cp) {
 		DWORD character_id = cp.Decode4();
 		BYTE channel = cp.Decode1();
 
-		GetGameServerPacket(); // notify game server ip
-		ConnectedPacket(); // connected
-		ChangeMapPacket(2002); // map change
-		CharacterSpawn(); // character spawn
-		return true;
+		TA.Login(character_id);
+
+		for (auto &chr : TA.GetCharacters()) {
+			if (chr.id == character_id) {
+				GetGameServerPacket(); // notify game server ip
+				ConnectedPacket(); // connected
+				ChangeMapPacket(chr.map); // map change
+				CharacterSpawn(chr); // character spawn
+				return true;
+			}
+		}
+		return false;
 	}
 	// Create New Character
 	case CP_CREATE_CHARACTER: {
@@ -301,34 +294,9 @@ bool FakeServer(ClientPacket &cp) {
 		guardian_equip.push_back(guardian_head);
 		guardian_equip.push_back(guardian_body);
 		guardian_equip.push_back(guardian_weapon);
-		guardian_equip.resize(15);
 
-		{
-			ServerPacket sp(SP_CHARACTER_LIST);
-			sp.Encode1(1); // characters
-			sp.Encode4(1234); // ID
-			sp.Encode1(job_mask); // job + gender
-			sp.Encode1(10); // level
-			sp.EncodeWStr1(character_name); // name
-			sp.EncodeWStr1(L"str");
-			sp.Encode2(job_id);
-			sp.Encode2(character_skin);
-			sp.Encode2(character_hair);
-			sp.Encode2(character_face);
-			sp.Encode2(character_cloth);
-			sp.Encode2(guardian_color);
-
-			// character equip, max 15
-			for (int i = 0; i < 15; i++) sp.Encode2(0);
-			// guardian equip, max 15
-			for(auto g_equip: guardian_equip){
-				sp.Encode2(g_equip);
-			}
-
-			sp.Encode2(2002); // mapid
-			sp.Encode1(3); // character slots
-			SendPacket(sp);
-		}
+		TA.AddCharacter(character_name, job_mask, job_id, character_skin, character_hair, character_face, character_cloth, guardian_color, guardian_equip);
+		CharacterListPacket_Test();
 		return true;
 	}
 	// Character Select to World Select
