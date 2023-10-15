@@ -12,20 +12,26 @@
 #define Addr_EnterSendPacket 0x0056AADB
 #define Addr_OnPacketClass 0x006FAF44
 #define Addr_LoginButton 0x00532FEF
-#define Addr_CharacterSelectButton 0x00535F02
+//#define Addr_CharacterSelectButton 0x00535F02
 #define Addr_CharacterLoginButonOffset 0x1BC
+#define Addr_LoginConnect_Caller 0x0056A4FD
+#define Addr_WorldSelectButton 0x00533D74
 #elif REGION == REGION_HK
 #define Addr_EnterSendPacket 0x005AC927
 #define Addr_OnPacketClass 0x0075CF84
 #define Addr_LoginButton 0x0052CFC2
-#define Addr_CharacterSelectButton 0x0053009D
+//#define Addr_CharacterSelectButton 0x0053009D
 #define Addr_CharacterLoginButonOffset 0x1B8
+#define Addr_LoginConnect_Caller 0x005832FE
+#define Addr_WorldSelectButton 0x0052DC5A
 #elif REGION == REGION_KR
 #define Addr_EnterSendPacket 0x005CBA0F
 #define Addr_OnPacketClass 0x0075E184
 #define Addr_LoginButton 0x004767A3 // login error dialog
-#define Addr_CharacterSelectButton 0x0054327B // test
+//#define Addr_CharacterSelectButton 0x0054327B
 #define Addr_CharacterLoginButonOffset 0x1B8
+#define Addr_LoginConnect_Caller 0x0059DED0
+#define Addr_WorldSelectButton 0x00540E22
 #endif
 
 
@@ -81,7 +87,7 @@ void __fastcall WorldSelectButton_Hook(void *ecx) {
 	CharacterListPacket_Test();
 }
 
-bool (__thiscall *_ConnectCaller)(OutPacket *) = NULL;
+bool (__thiscall *_ConnectCaller)(void *) = NULL;
 bool __fastcall ConnectCaller_Hook(void *ecx, void *edx, void *v1, void *v2, void *v3) {
 	DEBUG(L"Connect is called!");
 	// ignore connect checks
