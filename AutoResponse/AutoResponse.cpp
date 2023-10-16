@@ -8,6 +8,7 @@
 //#define Addr_CharacterSelectButton 0x00531430
 #define Addr_CharacterLoginButonOffset 0x1BC
 #define Addr_LoginConnect_Caller 0x0055EFE2
+#define Addr_PortalID 0x0042D3DC
 #elif REGION == REGION_CN
 #define Addr_EnterSendPacket 0x0056AADB
 #define Addr_OnPacketClass 0x006FAF44
@@ -114,5 +115,8 @@ bool AutoResponseHook() {
 	SHookFunction(EnterSendPacket, Addr_EnterSendPacket);
 	// ignore connect checks for world select and character select
 	SHookFunction(ConnectCaller, Addr_LoginConnect_Caller);
+
+	Rosemary r;
+	r.Patch(Addr_PortalID + 2, L"18"); // portal id to map id
 	return true;
 }

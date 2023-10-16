@@ -9,10 +9,10 @@ TenviAccount TA;
 // 0x01
 void VersionPacket() {
 	ServerPacket sp(SP_VERSION);
-	sp.Encode4(TENVI_VERSION); // version
-	sp.Encode4(1);
-	sp.Encode4(1);
-	sp.Encode4(1);
+	sp.Encode4(TENVI_VERSION); // 00491388, version
+	sp.Encode4(1); // 00491391
+	sp.Encode4(1); // 0049139A
+	sp.Encode4(1); // 004913A4
 	SendPacket(sp);
 }
 
@@ -23,12 +23,18 @@ void CrashPacket() {
 	SendPacket(sp);
 }
 
+// 0x03
+void LoginFailedPacket() {
+	ServerPacket sp(SP_LOGIN_FAILED);
+	SendPacket(sp);
+}
+
 // 0x04
 void CharacterSelectPacket() {
 	ServerPacket sp(SP_CHARACTER_SELECT);
-	sp.Encode1(0);
-	sp.Encode4(-1);
-	sp.Encode1(0);
+	sp.Encode1(0); // 00492CE6, 0 = OK, 1 = login error
+	sp.Encode4(-1); // 00492D5B saved to pointer
+	sp.Encode1(0); // 00492D65 saved to pointer
 	SendPacket(sp);
 }
 
@@ -44,11 +50,11 @@ void CharacterListPacket() {
 void CharacterListPacket_Test() {
 	ServerPacket sp(SP_CHARACTER_LIST);
 
-	sp.Encode1(TA.GetCharacters().size()); // characters
+	sp.Encode1((BYTE)TA.GetCharacters().size()); // characters
 	for (auto &chr : TA.GetCharacters()) {
 		sp.Encode4(chr.id); // ID
 		sp.Encode1(chr.job_mask);
-		sp.Encode1(chr.level); // level
+		sp.Encode1((BYTE)chr.level); // level
 		sp.EncodeWStr1(chr.name); // name
 		sp.EncodeWStr1(L"");
 		sp.Encode2(chr.job);
@@ -69,6 +75,13 @@ void CharacterListPacket_Test() {
 	}
 
 	sp.Encode1(TA.slot); // character slots
+	SendPacket(sp);
+}
+
+// 0x07
+void DeleteCharacter() {
+	ServerPacket sp(SP_DELETE_CHARACTER_MSG);
+	sp.Encode1(0); // 00491C61, error code 1,2,4
 	SendPacket(sp);
 }
 
@@ -118,6 +131,22 @@ void WorldListPacket() {
 	SendPacket(sp);
 }
 
+// 0x0A not used in JP
+void CharacterSelectInvitedPacket() {
+	ServerPacket sp(SP_CS_INVITED);
+	sp.Encode1(0); // 00491CEF, 0-2
+	sp.Encode4(0); // 00491E20, unique code
+	SendPacket(sp);
+}
+
+// 0x0B not used in JP
+void CharacterSelectUnknownMsgPacket() {
+	ServerPacket sp(SP_CS_KOREAN_MSG);
+	sp.Encode1(1); // 00491AF9, show dialog
+	sp.Encode1(0); // 00491B1E, not used
+	SendPacket(sp);
+}
+
 // 0x0C
 void GetGameServerPacket() {
 	ServerPacket sp(SP_GET_GAME_SERVER);
@@ -147,10 +176,22 @@ void ConnectedPacket() {
 	SendPacket(sp);
 }
 
+// 0x0F
+void MapResetPacket() {
+	ServerPacket sp(SP_MAP_RESET);
+	sp.Encode1(0); // error code
+	sp.Encode4(0);
+	sp.Encode4(0);
+	sp.Encode4(0);
+	sp.Encode2(0);
+	sp.Encode2(0);
+	SendPacket(sp);
+}
+
 // 0x10
 void ChangeMapPacket(WORD mapid) {
 	ServerPacket sp(SP_MAP_CHANGE);
-	sp.Encode1(0);
+	sp.Encode1(0); // error code = 37
 	sp.Encode2(mapid); // mapid
 	sp.Encode1(0);
 	sp.Encode4(0);
@@ -168,15 +209,15 @@ void ChangeMapPacket(WORD mapid) {
 void CharacterSpawn(TenviCharacter &chr) {
 	ServerPacket sp(SP_CHARACTER_SPAWN);
 	sp.Encode4(chr.id); // 0048DB9B id, where checks id?
-	sp.Encode4(0); // 0048DBA5 x
-	sp.Encode4(0); // 0048DBAF y
-	sp.Encode1(0); // 0048DBB9 direction
-	sp.Encode1(1); // 0048DBC6 guardian
-	sp.Encode1(1); // 0048DBD3 death
-	sp.Encode1(1); // 0048DBE0 guardian gasping
-	sp.Encode4(1); // 0048DBFB
+	sp.Encode4(0); // 0048DBA5, coordinate x
+	sp.Encode4(0); // 0048DBAF, corrdinate y
+	sp.Encode1(0); // 0048DBB9, direction 0 = left, 1 = right
+	sp.Encode1(1); // 0048DBC6, guardian, 0 = guardian off, 1 = guardian on
+	sp.Encode1(1); // 0048DBD3, death, 0 = death, 1 = alive
+	sp.Encode1(0); // 0048DBE0, battle, 0 = change channel OK, 1 = change channel NG
+	sp.Encode4(0); // 0048DBFB, ???
 	sp.Encode1(chr.job_mask); // 0048DC08
-	sp.Encode1(chr.level); // 0048DC2B
+	sp.Encode1((BYTE)chr.level); // 0048DC2B
 #if REGION == REGION_HK || REGION == REGION_KR
 	sp.Encode1(1);
 #endif
@@ -192,12 +233,13 @@ void CharacterSpawn(TenviCharacter &chr) {
 	sp.Encode2(chr.gcolor); // 0048DCEF
 	sp.Encode1(0); // 0048DCFD
 
-	for (int i = 0; i < 15; i++) {
+	// character equip
+	for (auto equip : chr.equipped) {
 		sp.Encode8(0);
-		sp.Encode2(0);
+		sp.Encode2(equip);
 	}
 
-	// fixed size (15)
+	// guardian equip
 	for (auto gequip : chr.gequipped) {
 		sp.Encode8(0);
 		sp.Encode2(gequip);
@@ -260,50 +302,69 @@ void CharacterSpawn(TenviCharacter &chr) {
 // 0x3D
 void AccountDataPacket(TenviCharacter &chr) {
 	ServerPacket sp(SP_ACCOUNT_DATA);
-	sp.Encode4(0); // 00498E4F
-	sp.Encode4(chr.id); // 00498E5C
-	sp.EncodeWStr1(chr.name); // 00498E79
-	sp.EncodeWStr1(L""); // 00498EA5
+	sp.Encode4(0); // 00498E4F, ???
+	sp.Encode4(chr.id); // 00498E5C, character id
+	sp.EncodeWStr1(chr.name); // 00498E79, character name
+	sp.EncodeWStr1(L""); // 00498EA5, ???
 	sp.Encode1(chr.job_mask); // 00498ECD
-	sp.Encode1(chr.level); // 00498EF0
-	sp.Encode8(1234); // 00498F0C
-	sp.Encode8(4567); // 00498F28
-	sp.Encode8(7890); // 00498F44
+	sp.Encode1((BYTE)chr.level); // 00498EF0
+	sp.Encode8(1234); // 00498F0C, EXP
+	sp.Encode8(77770503); // 00498F28, Coin (Gold, Silver, Bronze)
+	sp.Encode8(0); // 00498F44, ???
 	sp.Encode1(0); // 00498F60
 	sp.Encode1(0); // 00498F70
 	sp.Encode1(0); // 00498F80
-	sp.EncodeWStr1(L""); // 0057A877
-	sp.Encode1(0); // 0057B508
-	sp.Encode1(0); // 0057B515
-	sp.Encode1(0); // 0057B522
-	sp.Encode1(0); // 0057B52F
-	sp.Encode1(0); // 0057B53C
-	sp.Encode1(0); // 0057B549
-	sp.EncodeWStr1(L""); // 00498FA0
+	{
+		sp.EncodeWStr1(L"TENVI"); // 0057A877, Guild Name
+		{
+			sp.Encode1(0); // 0057B508
+			sp.Encode1(0); // 0057B515
+			sp.Encode1(0); // 0057B522
+			sp.Encode1(0); // 0057B52F
+			sp.Encode1(0); // 0057B53C
+			sp.Encode1(0); // 0057B549
+		}
+	}
+	sp.EncodeWStr1(L"chr unk1"); // 00498FA0
 	sp.Encode1(0); // 00498FC8
 	sp.Encode1(0); // 00498FD8
 	sp.Encode1(0); // 00498FF0
-	sp.Encode1(0); // 00499024
-	sp.Encode1(0); // 00499024
-	sp.Encode1(0); // 00499024
-	sp.Encode1(0); // 00499024
-	sp.EncodeWStr1(L""); // 00499044
-	sp.Encode1(0); // 0049906C
+	// loop 4
+	{
+		sp.Encode1(5 * 8); // 00499024, Equip Slot
+		sp.Encode1(5 * 8); // 00499024, Item Slot
+		sp.Encode1(5 * 8); // 00499024, Cash Slot
+		sp.Encode1(4 * 10); // 00499024, Card Slots
+	}
+	sp.EncodeWStr1(L"TenviTest"); // 00499044, Profile Message
+	sp.Encode1(0); // 0049906C, ???
 	sp.Encode1(0); // 004990B3
-	sp.Encode1(0); // 00499101
+	// loop
+	{
+		/*
+		sp.Encode1(0);
+		sp.Encode2(0);
+		sp.Encode1(0);
+		*/
+	}
+	sp.Encode1(0); // 00499101, ???
 	sp.Encode4(0); // 00499117
 	sp.Encode1(0); // 00499124
-	sp.Encode1(0); // 00499134
-	sp.Encode4(0); // 00499144
-	sp.EncodeWStr1(L""); // 00499155
-	sp.Encode1(0); // 0049917D
-	sp.Encode1(0); // 0049918D
-	sp.Encode1(0); // 0049919D
+	sp.Encode1(0); // 00499134, Married?
+	sp.Encode4(0); // 00499144, Partner Character ID?
+	sp.EncodeWStr1(L""); // 00499155, Partner Name?
+	sp.Encode1(0); // 0049917D, Item Shop New Icon
+	sp.Encode1(0); // 0049918D, Item Shop Box Icon
+	sp.Encode1(0); // 0049919D, ???
 
+	SendPacket(sp);
+}
 
-	for (int i = 0; i < 100; i++) {
-		sp.Encode8(0);
-	}
+// 0x42
+void PlayerLevelUpPacket(TenviCharacter &chr) {
+	ServerPacket sp(SP_PLAYER_LEVEL_UP);
+	sp.Encode4(chr.id); // 00488FD1, id
+	sp.Encode1(chr.level + 1); // 00488FDB, 0 = rank up, others are level
 	SendPacket(sp);
 }
 
@@ -355,6 +416,12 @@ bool FakeServer(ClientPacket &cp) {
 		CharacterListPacket_Test();
 		return true;
 	}
+	// Delete Character
+	case CP_DELETE_CHARACTER: {
+		DWORD character_id = cp.Decode4();
+		// not coded
+		return true;
+	}
 	// Character Select to World Select
 	case CP_BACK_TO_LOGIN_SERVER: {
 		WorldSelectPacket(); // back to login server
@@ -366,6 +433,23 @@ bool FakeServer(ClientPacket &cp) {
 		GetLoginServerPacket();// notify login server ip
 		ConnectedPacket(); // connected
 		CharacterListPacket_Test();
+		return true;
+	}
+	case CP_USE_PORTAL: {
+		// hack, portal id to map id
+		WORD mapid = (WORD)cp.Decode4(); // mapid
+		//cp.DecodeWStr1();
+		ChangeMapPacket(mapid);
+		TenviCharacter &chr = TA.GetOnline();
+		chr.map = mapid;
+		CharacterSpawn(chr);
+		return true;
+	}
+	case CP_PLAYER_CHAT: {
+		BYTE type = cp.Decode1(); // 0 = map chat
+		cp.Decode1(); // 1
+		cp.Decode1(); // 0
+		std::wstring message = cp.DecodeWStr1();
 		return true;
 	}
 	default:

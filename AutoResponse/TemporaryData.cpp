@@ -13,12 +13,26 @@ TenviCharacter::TenviCharacter(std::wstring nName, BYTE nJob_Mask, WORD nJob, WO
 	face = nFace;
 	cloth = nCloth;
 	gcolor = nGColor;
+	equipped.resize(15);
 	gequipped = nGEquipped;
 	gequipped.resize(15);
 	map = 2002;
 	level = 30;
 }
 
+
+void TenviCharacter::TestSilva() {
+	gcolor = 187;
+	hair = 137;
+	//map = 8003;
+	map = 8037;
+	equipped.clear();
+	equipped.push_back(228); // hat
+	equipped.push_back(105); // overall
+	equipped.push_back(22508); // weapon
+	//equipped.push_back(28715); // weapon ava?
+	equipped.resize(15);
+}
 
 // init
 TenviAccount::TenviAccount() {
@@ -31,6 +45,7 @@ TenviAccount::TenviAccount() {
 	silva_equip.push_back(20502);
 	silva_equip.push_back(22508);
 	TenviCharacter silva(L"Silva", (1 << 4) | 4, 6, 3, 19, 24, 479, 157, silva_equip);
+	silva.TestSilva(); // test
 
 	std::vector<WORD> talli_equip;
 	talli_equip.push_back(20001);
@@ -80,4 +95,14 @@ std::vector<TenviCharacter>& TenviAccount::GetCharacters() {
 bool TenviAccount::Login(DWORD id) {
 	online_id = id;
 	return true;
+}
+
+TenviCharacter& TenviAccount::GetOnline() {
+	for (auto &character : characters) {
+		if (character.id == online_id) {
+			return character;
+		}
+	}
+
+	return characters[0];
 }
