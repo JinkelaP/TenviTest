@@ -66,7 +66,7 @@ HANDLE WINAPI CreateMutexW_Hook(LPSECURITY_ATTRIBUTES lpMutexAttributes, BOOL bI
 		DEBUG(L"Tenvi Mutex Closed!");
 	}
 
-	// Tenvi KR does not have mutex
+	// Tenvi CN, KR does not have mutex
 	if (SimpleHook::IsCallerEXE(_ReturnAddress())) {
 		if (!bAlreadyLoaded) {
 			DelayLoad();

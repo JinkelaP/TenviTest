@@ -1,40 +1,6 @@
 #include"AutoResponse.h"
 
-#if REGION == REGION_JP
-#define Addr_EnterSendPacket 0x0055F2A8
-#define Addr_OnPacketClass 0x006DB164
-#define Addr_LoginButton 0x0052E43B
-#define Addr_WorldSelectButton 0x0052F038
-//#define Addr_CharacterSelectButton 0x00531430
-#define Addr_CharacterLoginButonOffset 0x1BC
-#define Addr_LoginConnect_Caller 0x0055EFE2
-#define Addr_PortalID 0x0042D3DC
-#elif REGION == REGION_CN
-#define Addr_EnterSendPacket 0x0056AADB
-#define Addr_OnPacketClass 0x006FAF44
-#define Addr_LoginButton 0x00532FEF
-//#define Addr_CharacterSelectButton 0x00535F02
-#define Addr_CharacterLoginButonOffset 0x1BC
-#define Addr_LoginConnect_Caller 0x0056A4FD
-#define Addr_WorldSelectButton 0x00533D74
-#elif REGION == REGION_HK
-#define Addr_EnterSendPacket 0x005AC927
-#define Addr_OnPacketClass 0x0075CF84
-#define Addr_LoginButton 0x0052CFC2
-//#define Addr_CharacterSelectButton 0x0053009D
-#define Addr_CharacterLoginButonOffset 0x1B8
-#define Addr_LoginConnect_Caller 0x005832FE
-#define Addr_WorldSelectButton 0x0052DC5A
-#elif REGION == REGION_KR
-#define Addr_EnterSendPacket 0x005CBA0F
-#define Addr_OnPacketClass 0x0075E184
-#define Addr_LoginButton 0x004767A3 // login error dialog
-//#define Addr_CharacterSelectButton 0x0054327B
-#define Addr_CharacterLoginButonOffset 0x1B8
-#define Addr_LoginConnect_Caller 0x0059DED0
-#define Addr_WorldSelectButton 0x00540E22
-#endif
-
+DWORD Addr_OnPacketClass = 0;
 
 // ignore packet encryption
 void OnPacketDirectExec(InPacket *p) {
@@ -68,17 +34,18 @@ void SendPacket(ServerPacket &sp) {
 }
 
 // Login Button Click
-#if REGION == REGION_KR
-DWORD(__thiscall *_LoginButton)(void *ecx, void *, void *, void *) = NULL;
-DWORD __fastcall LoginButton_Hook(void *ecx, void *, void *, void *) {
-#else
 DWORD (__thiscall *_LoginButton)(void *ecx) = NULL;
 DWORD __fastcall LoginButton_Hook(void *ecx) {
-#endif
-	//_LoginButton(ecx);
 	WorldListPacket();
 	return 0;
 }
+
+DWORD (__thiscall *_LoginButton_KR)(void *ecx, void *, void *, void *) = NULL;
+DWORD __fastcall LoginButton_KR_Hook(void *ecx, void *, void *, void *) {
+	WorldListPacket();
+	return 0;
+}
+
 
 void (__thiscall *_WorldSelectButton)(void *) = NULL;
 void __fastcall WorldSelectButton_Hook(void *ecx) {
@@ -107,16 +74,52 @@ void __fastcall EnterSendPacket_Hook(OutPacket *op) {
 }
 
 bool AutoResponseHook() {
-	// press button to go world select
-	SHookFunction(LoginButton, Addr_LoginButton);
-	// world select to go character select
-	SHookFunction(WorldSelectButton, Addr_WorldSelectButton);
-	// read send packet buffer without using server
-	SHookFunction(EnterSendPacket, Addr_EnterSendPacket);
-	// ignore connect checks for world select and character select
-	SHookFunction(ConnectCaller, Addr_LoginConnect_Caller);
-
 	Rosemary r;
-	r.Patch(Addr_PortalID + 2, L"18"); // portal id to map id
-	return true;
+
+	switch (GetRegion()) {
+	case TENVI_JP: {
+		Addr_OnPacketClass = 0x006DB164;
+		// press button to go world select
+		SHookFunction(LoginButton, 0x0052E43B);
+		// world select to go character select
+		SHookFunction(WorldSelectButton, 0x0052F038);
+		// read send packet buffer without using server
+		SHookFunction(EnterSendPacket, 0x0055F2A8);
+		// ignore connect checks for world select and character select
+		SHookFunction(ConnectCaller, 0x0055EFE2);
+
+		// patch
+		r.Patch(0x0042D3DC + 2, L"18"); // portal id to map id
+		return true;
+	}
+	case TENVI_CN: {
+		Addr_OnPacketClass = 0x006FAF44;
+		SHookFunction(LoginButton, 0x00532FEF);
+		SHookFunction(WorldSelectButton, 0x00533D74);
+		SHookFunction(EnterSendPacket, 0x0056AADB);
+		SHookFunction(ConnectCaller, 0x0056A4FD);
+		return true;
+	}
+	case TENVI_HK: {
+		Addr_OnPacketClass = 0x0075CF84;
+		SHookFunction(LoginButton, 0x0052CFC2);
+		SHookFunction(WorldSelectButton, 0x0052DC5A);
+		SHookFunction(EnterSendPacket, 0x005AC927);
+		SHookFunction(ConnectCaller, 0x005832FE);
+		return true;
+	}
+	case TENVI_KR: {
+		Addr_OnPacketClass = 0x0075E184;
+		SHookFunction(LoginButton_KR, 0x004767A3);
+		SHookFunction(WorldSelectButton, 0x00540E22);
+		SHookFunction(EnterSendPacket, 0x005CBA0F);
+		SHookFunction(ConnectCaller, 0x0059DED0);
+		return true;
+	}
+	default: {
+		break;
+	}
+	}
+
+	return false;
 }

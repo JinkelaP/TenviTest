@@ -98,9 +98,9 @@ void WorldListPacket() {
 	ServerPacket sp(SP_WORLD_LIST);
 	sp.EncodeWStr2(L""); // 004938BC, Message
 
-#if REGION == REGION_JP || REGION == REGION_CN
-	sp.Encode1(0); // 004938C8, NetCafe
-#endif
+	if (GetRegion() == TENVI_JP || GetRegion() == TENVI_CN) {
+		sp.Encode1(0); // 004938C8, NetCafe
+	}
 
 	sp.Encode1(worlds); // 00493934, Number of Worlds
 	for(int world = 0; world < worlds; world++) {
@@ -123,9 +123,11 @@ void WorldListPacket() {
 
 	sp.Encode1(1); // 00493A6A
 	sp.Encode1(0); // 00493A7B
-#if REGION == REGION_JP || REGION == REGION_CN
-	sp.Encode1(0); // 00493A88
-#endif
+
+	if (GetRegion() == TENVI_JP || GetRegion() == TENVI_CN) {
+		sp.Encode1(0); // 00493A88
+	}
+
 	sp.Encode1(0); // 00493A92
 
 	SendPacket(sp);
@@ -218,9 +220,11 @@ void CharacterSpawn(TenviCharacter &chr) {
 	sp.Encode4(0); // 0048DBFB, ???
 	sp.Encode1(chr.job_mask); // 0048DC08
 	sp.Encode1((BYTE)chr.level); // 0048DC2B
-#if REGION == REGION_HK || REGION == REGION_KR
-	sp.Encode1(1);
-#endif
+
+	if (GetRegion() == TENVI_HK || GetRegion() == TENVI_KR) {
+		sp.Encode1(1);
+	}
+
 	sp.EncodeWStr1(chr.name); // name
 	sp.EncodeWStr1(L""); // guardian name
 	sp.Encode1(0); // 0048DC8F
@@ -250,11 +254,13 @@ void CharacterSpawn(TenviCharacter &chr) {
 	sp.Encode2(0); // 0048DDE1
 	sp.Encode2(0); // 0048DDF1
 	sp.Encode2(0); // 0048DE01
-#if REGION == REGION_JP || REGION == REGION_CN
-	sp.Encode1(0); // 0048DE11
-	sp.Encode1(0); // 0048DE21
-	sp.Encode1(0); // 0048DE35
-#endif
+
+	if (GetRegion() == TENVI_JP || GetRegion() == TENVI_CN) {
+		sp.Encode1(0); // 0048DE11
+		sp.Encode1(0); // 0048DE21
+		sp.Encode1(0); // 0048DE35
+	}
+
 	sp.EncodeWStr1(L""); // guild
 	sp.Encode1(0); // 0057B508
 	sp.Encode1(0); // 0057B515
@@ -292,10 +298,12 @@ void CharacterSpawn(TenviCharacter &chr) {
 	sp.EncodeWStr1(L""); // 0048E768
 	sp.Encode1(0); // 0048E773
 	sp.Encode1(0); // 0048E780
-#if REGION == REGION_HK || REGION == REGION_KR
-	sp.Encode1(0);
-	sp.Encode1(0);
-#endif
+
+	if (GetRegion() == TENVI_HK || GetRegion() == TENVI_KR) {
+		sp.Encode1(0);
+		sp.Encode1(0);
+	}
+
 	SendPacket(sp);
 }
 

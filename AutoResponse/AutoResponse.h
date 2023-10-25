@@ -8,12 +8,14 @@
 #include"ServerPacket.h"
 #include"FakeServer.h"
 
-#define REGION_JP 0
-#define REGION_CN 1
-#define REGION_HK 2
-#define REGION_KR 3
+enum Region {
+	TENVI_JP, // JP v127
+	TENVI_CN, // CN v126
+	TENVI_HK, // HK v102
+	TENVI_KR, // KR v107 (Xtream)
+};
 
-#define REGION REGION_JP
+Region GetRegion();
 
 bool AutoResponseHook();
 void SendPacket(ServerPacket &sp);
