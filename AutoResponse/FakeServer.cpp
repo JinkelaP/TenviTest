@@ -452,6 +452,11 @@ bool FakeServer(ClientPacket &cp) {
 		std::wstring message = cp.DecodeWStr1();
 		return true;
 	}
+	case CP_TIME_GET_TIME: {
+		cp.Decode1(); // 0
+		cp.Decode4(); // time
+		return true;
+	}
 	default:
 	{
 		break;
