@@ -1,47 +1,11 @@
 #include"../Share/Simple/Simple.h"
 #include"../Share/Hook/SimpleHook.h"
+#include"../EmuMainTenvi/ConfigTenvi.h"
 
-enum Region {
-	TENVI_JP, // JP v127
-	TENVI_CN, // CN v126
-	TENVI_HK, // HK v102
-	TENVI_KR, // KR v107 (Xtream)
-};
-
-#define EXE_NAME L"RunEmuTenvi"
-
-Region GetRegion(HINSTANCE hinstDLL) {
-	Config conf(EXE_NAME".ini", hinstDLL);
-	std::wstring wRegion;
-
-	if (!conf.Read(EXE_NAME, L"Region", wRegion) || wRegion.length() == 0) {
-		DEBUG(L"EmuMainTenvi - JP (Default)");
-		return TENVI_JP;
-	}
-
-	if (wRegion.compare(L"CN") == 0) {
-		DEBUG(L"EmuMainTenvi - CN");
-		return TENVI_CN;
-	}
-
-	if (wRegion.compare(L"HK") == 0) {
-		DEBUG(L"EmuMainTenvi - HK");
-		return TENVI_HK;
-	}
-
-	if (wRegion.compare(L"KR") == 0) {
-		DEBUG(L"EmuMainTenvi - KR");
-		return TENVI_KR;
-	}
-
-	DEBUG(L"EmuMainTenvi - JP");
-	return TENVI_JP;
-}
-
-bool EmuMainTenvi(HINSTANCE hinstDLL) {
+bool EmuMainTenvi() {
 	Rosemary r;
 
-	switch (GetRegion(hinstDLL)) {
+	switch (GetRegion()) {
 	case TENVI_JP: {
 		// HSUpdate
 		r.Patch(0x005D70D6, L"31 C0 C2 0C 00");
@@ -108,7 +72,8 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved) {
 	case DLL_PROCESS_ATTACH:
 	{
 		DisableThreadLibraryCalls(hinstDLL);
-		EmuMainTenvi(hinstDLL);
+		LoadRegionConfig(hinstDLL);
+		EmuMainTenvi();
 		break;
 	}
 	case DLL_PROCESS_DETACH:

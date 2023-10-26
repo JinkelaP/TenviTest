@@ -7,15 +7,7 @@
 #include"ClientPacket.h"
 #include"ServerPacket.h"
 #include"FakeServer.h"
-
-enum Region {
-	TENVI_JP, // JP v127
-	TENVI_CN, // CN v126
-	TENVI_HK, // HK v102
-	TENVI_KR, // KR v107 (Xtream)
-};
-
-Region GetRegion();
+#include"../EmuMainTenvi/ConfigTenvi.h"
 
 bool AutoResponseHook();
 void SendPacket(ServerPacket &sp);

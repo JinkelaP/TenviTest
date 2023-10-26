@@ -20,9 +20,9 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{A8C36490-0643-4C6A-9FF4-BED8E7BE3B73}</ProjectGuid>
+    <ProjectGuid>{DC5417D1-FEBB-41E2-9C2B-141BB6EC4345}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>AutoResponse</RootNamespace>
+    <RootNamespace>PacketTenvi</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -89,7 +89,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;AUTORESPONSE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;PACKETTENVI_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -106,7 +106,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;AUTORESPONSE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;PACKETTENVI_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -120,7 +120,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;AUTORESPONSE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;PACKETTENVI_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -136,7 +136,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;AUTORESPONSE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;PACKETTENVI_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -149,21 +149,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\EmuMainTenvi\ConfigTenvi.cpp" />
-    <ClCompile Include="AutoResponse.cpp" />
-    <ClCompile Include="ClientPacket.cpp" />
     <ClCompile Include="DllMain.cpp" />
-    <ClCompile Include="FakeServer.cpp" />
-    <ClCompile Include="ServerPacket.cpp" />
-    <ClCompile Include="TemporaryData.cpp" />
+    <ClCompile Include="PacketTenvi.cpp" />
+    <ClCompile Include="PacketTenviSender.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\EmuMainTenvi\ConfigTenvi.h" />
-    <ClInclude Include="AutoResponse.h" />
-    <ClInclude Include="ClientPacket.h" />
-    <ClInclude Include="FakeServer.h" />
-    <ClInclude Include="ServerPacket.h" />
-    <ClInclude Include="TemporaryData.h" />
-    <ClInclude Include="TenviPacket.h" />
+    <ClInclude Include="PacketTenvi.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

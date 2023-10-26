@@ -148,7 +148,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ConfigTenvi.cpp" />
     <ClCompile Include="EmuMainTenvi.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ConfigTenvi.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
