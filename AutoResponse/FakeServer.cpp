@@ -334,15 +334,24 @@ void AccountDataPacket(TenviCharacter &chr) {
 		}
 	}
 	sp.EncodeWStr1(L"chr unk1"); // 00498FA0
-	sp.Encode1(0); // 00498FC8
-	sp.Encode1(0); // 00498FD8
-	sp.Encode1(0); // 00498FF0
+
+	if (GetRegion() == TENVI_JP) {
+		sp.Encode1(0); // 00498FC8
+		sp.Encode1(0); // 00498FD8
+		sp.Encode1(0); // 00498FF0
+	}
+
 	// loop 4
 	{
 		sp.Encode1(5 * 8); // 00499024, Equip Slot
 		sp.Encode1(5 * 8); // 00499024, Item Slot
 		sp.Encode1(5 * 8); // 00499024, Cash Slot
 		sp.Encode1(4 * 10); // 00499024, Card Slots
+
+		if (GetRegion() == TENVI_HK || GetRegion() == TENVI_KR) {
+			sp.Encode1(4); // unk
+		}
+
 	}
 	sp.EncodeWStr1(L"TenviTest"); // 00499044, Profile Message
 	sp.Encode1(0); // 0049906C, ???
@@ -364,6 +373,10 @@ void AccountDataPacket(TenviCharacter &chr) {
 	sp.Encode1(0); // 0049917D, Item Shop New Icon
 	sp.Encode1(0); // 0049918D, Item Shop Box Icon
 	sp.Encode1(0); // 0049919D, ???
+
+	if (GetRegion() == TENVI_CN) {
+		sp.Encode1(0);
+	}
 
 	SendPacket(sp);
 }

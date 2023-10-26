@@ -403,6 +403,10 @@ bool PacketHook() {
 	InitializeCriticalSection(&cs);
 	Rosemary r;
 
+	DWORD old = 0;
+	DWORD addr = 0x00401000;
+	VirtualProtect((void *)addr, 0x1000, PAGE_EXECUTE_READWRITE, &old);
+
 
 	switch (GetRegion()) {
 	case TENVI_JP: {
@@ -484,6 +488,9 @@ bool PacketHook() {
 		break;
 	}
 	}
+
+
+	VirtualProtect((void *)addr, 0x1000, old, &old);
 
 	StartPipeClient();
 	RunPacketSender();

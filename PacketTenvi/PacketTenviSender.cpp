@@ -37,7 +37,7 @@ VOID CALLBACK PacketInjector(HWND, UINT, UINT_PTR, DWORD) {
 
 decltype(CreateWindowExA) *_CreateWindowExA = NULL;
 HWND WINAPI CreateWindowExA_Hook(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam) {
-	if (lpClassName && (strcmp(lpClassName, "EngineClass") == 0 || strcmp(lpClassName, "TenviXEngine") == 0)) {
+	if (lpClassName && !IsBadReadPtr(lpClassName, 4) && (strcmp(lpClassName, "EngineClass") == 0 || strcmp(lpClassName, "TenviXEngine") == 0)) {
 		HWND hRet = _CreateWindowExA(dwExStyle, lpClassName, lpWindowName, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
 		if (!bInjectorCallback) {
 			bInjectorCallback = true;
