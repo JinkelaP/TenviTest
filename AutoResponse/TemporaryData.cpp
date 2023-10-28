@@ -18,6 +18,14 @@ TenviCharacter::TenviCharacter(std::wstring nName, BYTE nJob_Mask, WORD nJob, WO
 	gequipped.resize(15);
 	map = 2002;
 	level = 30;
+	sp = 500;
+	ap = 300;
+	// test stat
+	stat_str = 16;
+	stat_dex = 18;
+	stat_hp = 199;
+	stat_int = 712;
+	stat_mp = 158;
 }
 
 
@@ -32,6 +40,59 @@ void TenviCharacter::TestSilva() {
 	equipped.push_back(22508); // weapon
 	//equipped.push_back(28715); // weapon ava?
 	equipped.resize(15);
+}
+
+// game related
+bool TenviCharacter::UseSP(WORD skill_id) {
+	if (0 < sp) {
+		sp--;
+		for (auto &v : skill) {
+			if (v.id == skill_id) {
+				v.level++;
+				return true;
+			}
+		}
+
+		TenviSkill learn_skill;
+		learn_skill.id = skill_id;
+		learn_skill.level = 1;
+		skill.push_back(learn_skill);
+		return true;
+	}
+	return false;
+}
+
+bool TenviCharacter::UseAP(BYTE stat_id) {
+	if (0 < ap) {
+		ap--;
+		switch (stat_id) {
+		case TS_STR: {
+			stat_str++;
+			return true;
+		}
+		case TS_DEX: {
+			stat_dex++;
+			return true;
+		}
+		case TS_HP: {
+			stat_hp++;
+			return true;
+		}
+		case TS_INT: {
+			stat_int++;
+			return true;
+		}
+		case TS_MP: {
+			stat_mp++;
+			return true;
+		}
+		default:
+		{
+				break;
+		}
+		}
+	}
+	return false;
 }
 
 // init

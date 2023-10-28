@@ -392,13 +392,13 @@ void PlayerLevelUpPacket(TenviCharacter &chr) {
 // 0x45
 void PlayerSPPacket(TenviCharacter &chr) {
 	ServerPacket sp(SP_PLAYER_STAT_SP);
-	sp.Encode2(500);
+	sp.Encode2(chr.ap);
 	SendPacket(sp);
 }
 // 0x46
 void PlayerAPPacket(TenviCharacter &chr) {
 	ServerPacket sp(SP_PLAYER_STAT_AP);
-	sp.Encode2(300);
+	sp.Encode2(chr.ap);
 	SendPacket(sp);
 }
 
@@ -409,11 +409,11 @@ void PlayerStatPacket(TenviCharacter &chr) {
 	sp.Encode2(4000); // 00495713, MAXHP
 	sp.Encode2(1000); // 0049572F, MP
 	sp.Encode2(2000); // 0049574B, MAXMP
-	sp.Encode2(16); // 00495767, 力 (STR)
-	sp.Encode2(18); // 00495783, 敏捷 (DEX)
-	sp.Encode2(199); // 0049579F, 体力 (HP)
-	sp.Encode2(712); // 004957BB, 知能 (INT)
-	sp.Encode2(158); // 004957D7, 知恵 (MP)
+	sp.Encode2(chr.stat_str); // 00495767, 力 (STR)
+	sp.Encode2(chr.stat_dex); // 00495783, 敏捷 (DEX)
+	sp.Encode2(chr.stat_hp); // 0049579F, 体力 (HP)
+	sp.Encode2(chr.stat_int); // 004957BB, 知能 (INT)
+	sp.Encode2(chr.stat_mp); // 004957D7, 知恵 (MP)
 	sp.Encode2(988); // 004957F3, 物理ダメージ Min
 	sp.Encode2(1006); // 0049580F, 物理ダメージ Max
 	sp.Encode2(1000); // 0049582B, 物理攻撃力
@@ -436,6 +436,20 @@ void PlayerStatPacket(TenviCharacter &chr) {
 	sp.Encode2(0); // 00495A61
 	sp.Encode2(0); // 00495A80
 	sp.Encode2(0); // 00495A9F
+	SendPacket(sp);
+}
+
+// 0x6D
+void UpdateSkillPacket(TenviCharacter &chr) {
+	ServerPacket sp(SP_PLAYER_SKILL_ALL);
+	sp.Encode1(chr.skill.size()); // 0049977E, number of skills
+
+	for (auto v : chr.skill) {
+		sp.Encode1(1); // 00499792, idk
+		sp.Encode2(v.id); // 0049979F, skill id
+		sp.Encode1(v.level); // 004997AA, skill point
+	}
+
 	SendPacket(sp);
 }
 
@@ -510,7 +524,11 @@ bool FakeServer(ClientPacket &cp) {
 		return true;
 	}
 	case CP_USE_AP: {
+		TenviCharacter &chr = TA.GetOnline();
 		BYTE stat = cp.Decode1();
+		chr.UseAP(stat);
+		PlayerAPPacket(chr);
+		PlayerStatPacket(chr);
 		return true;
 	}
 	case CP_UPDATE_PROFILE: {
@@ -518,7 +536,11 @@ bool FakeServer(ClientPacket &cp) {
 		return true;
 	}
 	case CP_USE_SP: {
+		TenviCharacter &chr = TA.GetOnline();
 		WORD skill_id = cp.Decode2();
+		chr.UseSP(skill_id);
+		PlayerSPPacket(chr);
+		UpdateSkillPacket(chr);
 		return true;
 	}
 	case CP_USE_PORTAL: {
