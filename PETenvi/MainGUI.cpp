@@ -331,7 +331,7 @@ LRESULT CALLBACK ExitCallback(HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam)
 
 // start gui
 bool MainGUI(HINSTANCE hInstance) {
-	Alice a(L"PETenviClass", L"RiePE for Tenvi", PE_WIDTH, PE_HEIGHT, hInstance);
+	Alice a(L"PETenviClass", L"RirePE for Tenvi", PE_WIDTH, PE_HEIGHT, hInstance);
 
 	SetMainGUI(&a);
 	a.SetOnCreate(OnCreate);

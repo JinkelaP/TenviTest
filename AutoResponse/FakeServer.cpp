@@ -307,6 +307,27 @@ void CharacterSpawn(TenviCharacter &chr) {
 	SendPacket(sp);
 }
 
+// 0x12
+void RemoveObjectPacket(DWORD object_id) {
+	ServerPacket sp(SP_REMOVE_OBJECT);
+	sp.Encode4(object_id); // not only for character
+	SendPacket(sp);
+}
+
+// 0x3C
+void InMapTeleportPacket(TenviCharacter &chr) {
+	ServerPacket sp(SP_IN_MAP_TELEPORT);
+	sp.Encode4(chr.id); // 00489222, character id
+	sp.Encode1(1); // 0048923E, 0 = fall down, 1 = teleport to platform
+	sp.Encode4(0); // 0048924B, x?
+	sp.Encode4(0); // 00489255, y?
+	sp.Encode1(0); // 0048925F, 0 = face left, 1 = face right
+	sp.Encode1(0); // 00489269
+	sp.Encode1(0); // 00489276
+	sp.Encode1(1); // 00489283, 0 = no guardian, 1 = with guardian
+	SendPacket(sp);
+}
+
 // 0x3D
 void AccountDataPacket(TenviCharacter &chr) {
 	ServerPacket sp(SP_ACCOUNT_DATA);
@@ -392,7 +413,7 @@ void PlayerLevelUpPacket(TenviCharacter &chr) {
 // 0x45
 void PlayerSPPacket(TenviCharacter &chr) {
 	ServerPacket sp(SP_PLAYER_STAT_SP);
-	sp.Encode2(chr.ap);
+	sp.Encode2(chr.sp);
 	SendPacket(sp);
 }
 // 0x46
@@ -439,8 +460,17 @@ void PlayerStatPacket(TenviCharacter &chr) {
 	SendPacket(sp);
 }
 
+// 0x66
+void UpdateSkillPacket(TenviCharacter &chr, WORD skill_id) {
+	ServerPacket sp(SP_UPDATE_SKILL);
+	sp.Encode4(chr.id); // 00485E65, character id
+	sp.Encode2(skill_id); // 00485E6F, skill id
+	sp.Encode1(1); // 00485E7A, 0 = failed, 1 = success
+	SendPacket(sp);
+}
+
 // 0x6D
-void UpdateSkillPacket(TenviCharacter &chr) {
+void InitSkillPacket(TenviCharacter &chr) {
 	ServerPacket sp(SP_PLAYER_SKILL_ALL);
 	sp.Encode1(chr.skill.size()); // 0049977E, number of skills
 
@@ -448,6 +478,47 @@ void UpdateSkillPacket(TenviCharacter &chr) {
 		sp.Encode1(1); // 00499792, idk
 		sp.Encode2(v.id); // 0049979F, skill id
 		sp.Encode1(v.level); // 004997AA, skill point
+	}
+
+	SendPacket(sp);
+}
+
+// 0xE0
+enum BoardAction {
+	Board_Spawn = 0,
+	Board_Remove = 1,
+	Board_AddInfo = 2,
+};
+void BoardPacket(BoardAction action, std::wstring owner = L"", std::wstring msg = L"") {
+	ServerPacket sp(SP_BOARD);
+
+	sp.Encode1(action); // 0048F653, 0 = spawn object, 1 = remove object, 2 = insert info
+
+	switch (action) {
+	case Board_Spawn: {
+		sp.Encode4(3131); // 0048AEF6 object id
+		sp.Encode4(1337); // 0048AF00 ???
+		sp.EncodeWStr1(owner); // 0048AF0E ???
+		sp.EncodeWStr1(msg); // 0048AF1D message
+		sp.Encode4(0); // 0048AF28
+		sp.Encode4(0); // 0048AF32
+		sp.Encode1(0); // 0048AF3C
+		sp.Encode1(3); // 0048AF46 board type
+		break;
+	}
+	case Board_Remove: {
+		sp.Encode4(3131); // object id
+		break;
+	}
+	case Board_AddInfo: {
+		sp.Encode4(3131); // object id
+		sp.EncodeWStr1(msg); // 0048AF1D message
+		break;
+	}
+	default: {
+		// error
+		return;
+	}
 	}
 
 	SendPacket(sp);
@@ -473,8 +544,11 @@ bool FakeServer(ClientPacket &cp) {
 				PlayerStatPacket(chr);
 				PlayerSPPacket(chr);
 				PlayerAPPacket(chr);
+				InitSkillPacket(chr);
 				ChangeMapPacket(chr.map); // map change
 				CharacterSpawn(chr); // character spawn
+				BoardPacket(Board_Spawn, L"Riremito", L"Tenvi JP v127");
+				BoardPacket(Board_AddInfo, L"Riremito", L"Tenvi JP v127");
 				return true;
 			}
 		}
@@ -539,8 +613,8 @@ bool FakeServer(ClientPacket &cp) {
 		TenviCharacter &chr = TA.GetOnline();
 		WORD skill_id = cp.Decode2();
 		chr.UseSP(skill_id);
+		UpdateSkillPacket(chr, skill_id);
 		PlayerSPPacket(chr);
-		UpdateSkillPacket(chr);
 		return true;
 	}
 	case CP_USE_PORTAL: {
@@ -551,6 +625,7 @@ bool FakeServer(ClientPacket &cp) {
 		TenviCharacter &chr = TA.GetOnline();
 		chr.map = mapid;
 		CharacterSpawn(chr);
+		InMapTeleportPacket(chr);
 		return true;
 	}
 	case CP_CHANGE_CHANNEL: {
