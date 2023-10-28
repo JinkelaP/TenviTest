@@ -89,7 +89,10 @@ bool AutoResponseHook() {
 		SHookFunction(ConnectCaller, 0x0055EFE2);
 
 		// patch
-		r.Patch(0x0042D3DC + 2, L"18"); // portal id to map id
+		// portal id to map id
+		r.Patch(0x0042D3DC + 2, L"18");
+		// disable spamming character movement packet
+		r.Patch(0x00459649, L"B8 01 00 00 00");
 		return true;
 	}
 	case TENVI_CN: {

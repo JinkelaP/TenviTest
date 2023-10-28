@@ -389,6 +389,56 @@ void PlayerLevelUpPacket(TenviCharacter &chr) {
 	SendPacket(sp);
 }
 
+// 0x45
+void PlayerSPPacket(TenviCharacter &chr) {
+	ServerPacket sp(SP_PLAYER_STAT_SP);
+	sp.Encode2(500);
+	SendPacket(sp);
+}
+// 0x46
+void PlayerAPPacket(TenviCharacter &chr) {
+	ServerPacket sp(SP_PLAYER_STAT_AP);
+	sp.Encode2(300);
+	SendPacket(sp);
+}
+
+// 0x47
+void PlayerStatPacket(TenviCharacter &chr) {
+	ServerPacket sp(SP_PLAYER_STAT_ALL);
+	sp.Encode2(3000); // 004956F5, HP
+	sp.Encode2(4000); // 00495713, MAXHP
+	sp.Encode2(1000); // 0049572F, MP
+	sp.Encode2(2000); // 0049574B, MAXMP
+	sp.Encode2(16); // 00495767, 力 (STR)
+	sp.Encode2(18); // 00495783, 敏捷 (DEX)
+	sp.Encode2(199); // 0049579F, 体力 (HP)
+	sp.Encode2(712); // 004957BB, 知能 (INT)
+	sp.Encode2(158); // 004957D7, 知恵 (MP)
+	sp.Encode2(988); // 004957F3, 物理ダメージ Min
+	sp.Encode2(1006); // 0049580F, 物理ダメージ Max
+	sp.Encode2(1000); // 0049582B, 物理攻撃力
+	sp.Encode2(2718); // 00495847, 魔法攻撃力
+	sp.Encode2(1887); // 00495863, 防御力
+	sp.Encode2(9130); // 0049587F, 物理命中率
+	sp.Encode2(9763); // 004958A7, 魔法命中率
+	sp.Encode2(129); // 004958CF, 回避率
+	sp.Encode2(189); // 004958F7, 物理クリティカル
+	sp.Encode2(2279); // 0049591F, 魔法クリティカル
+	sp.Encode2(131); // 00495947, 飛行スピード
+	sp.Encode2(100); // 0049596F, 歩行スピード
+	sp.Encode2(22); // 00495997, 炎抵抗力
+	sp.Encode2(23); // 004959B3, 氷抵抗力
+	sp.Encode2(24); // 004959CF, 生抵抗力
+	sp.Encode2(25); // 004959EB, 光抵抗力
+	sp.Encode2(26); // 00495A07, 闇抵抗力
+	sp.Encode2(0); // 00495A23, 力差分
+	sp.Encode2(0); // 00495A42, 敏捷差分
+	sp.Encode2(0); // 00495A61
+	sp.Encode2(0); // 00495A80
+	sp.Encode2(0); // 00495A9F
+	SendPacket(sp);
+}
+
 // ========== TENVI Server Main ==========
 bool FakeServer(ClientPacket &cp) {
 	CLIENTPACKET header = (CLIENTPACKET)cp.Decode1();
@@ -406,6 +456,9 @@ bool FakeServer(ClientPacket &cp) {
 				GetGameServerPacket(); // notify game server ip
 				ConnectedPacket(); // connected
 				AccountDataPacket(chr);
+				PlayerStatPacket(chr);
+				PlayerSPPacket(chr);
+				PlayerAPPacket(chr);
 				ChangeMapPacket(chr.map); // map change
 				CharacterSpawn(chr); // character spawn
 				return true;
@@ -456,6 +509,18 @@ bool FakeServer(ClientPacket &cp) {
 		CharacterListPacket_Test();
 		return true;
 	}
+	case CP_USE_AP: {
+		BYTE stat = cp.Decode1();
+		return true;
+	}
+	case CP_UPDATE_PROFILE: {
+		std::wstring wText = cp.DecodeWStr1();
+		return true;
+	}
+	case CP_USE_SP: {
+		WORD skill_id = cp.Decode2();
+		return true;
+	}
 	case CP_USE_PORTAL: {
 		// hack, portal id to map id
 		WORD mapid = (WORD)cp.Decode4(); // mapid
@@ -464,6 +529,10 @@ bool FakeServer(ClientPacket &cp) {
 		TenviCharacter &chr = TA.GetOnline();
 		chr.map = mapid;
 		CharacterSpawn(chr);
+		return true;
+	}
+	case CP_CHANGE_CHANNEL: {
+		BYTE channel = cp.Decode1();
 		return true;
 	}
 	case CP_PLAYER_CHAT: {
