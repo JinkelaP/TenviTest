@@ -91,6 +91,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -143,7 +144,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Config.h" />
+    <ClInclude Include="ControlList.h" />
+    <ClInclude Include="FilterGUI.h" />
+    <ClInclude Include="FormatGUI.h" />
+    <ClInclude Include="MainGUI.h" />
+    <ClInclude Include="Packet.h" />
+    <ClInclude Include="PacketLogger.h" />
+    <ClInclude Include="PacketScript.h" />
+    <ClInclude Include="PacketSender.h" />
     <ClInclude Include="PETenvi.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Config.cpp" />
+    <ClCompile Include="FilterGUI.cpp" />
+    <ClCompile Include="FormatGUI.cpp" />
+    <ClCompile Include="MainGUI.cpp" />
+    <ClCompile Include="Packet.cpp" />
+    <ClCompile Include="PacketLogger.cpp" />
+    <ClCompile Include="PacketScript.cpp" />
+    <ClCompile Include="PacketSender.cpp" />
+    <ClCompile Include="WinMain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

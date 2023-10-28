@@ -13,7 +13,6 @@ bool RunEmu(std::wstring wDroppedTarget) {
 
 		std::wstring wDeafultLoaderDLL = DLL_NAME".dll";
 		conf.Update(EXE_NAME, L"LoaderDLL", wDeafultLoaderDLL);
-		conf.Update(EXE_NAME, L"Region", L"JP");
 	}
 
 	check &= conf.Read(EXE_NAME, L"TargetEXE", wTarget);
