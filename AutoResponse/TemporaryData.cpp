@@ -30,14 +30,14 @@ TenviCharacter::TenviCharacter(std::wstring nName, BYTE nJob_Mask, WORD nJob, WO
 
 
 void TenviCharacter::TestSilva() {
-	gcolor = 187;
-	hair = 137;
-	//map = 8003;
-	map = 8037;
-	equipped.clear();
-	equipped.push_back(228); // hat
-	equipped.push_back(105); // overall
-	equipped.push_back(22508); // weapon
+	//gcolor = 187;
+	//hair = 137;
+	map = 8003;
+	//map = 8037;
+	//equipped.clear();
+	//equipped.push_back(228); // hat
+	//equipped.push_back(105); // overall
+	//equipped.push_back(22508); // weapon
 	//equipped.push_back(28715); // weapon ava?
 	equipped.resize(15);
 }

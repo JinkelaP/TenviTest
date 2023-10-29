@@ -11,5 +11,6 @@
 
 bool AutoResponseHook();
 void SendPacket(ServerPacket &sp);
+void DelaySendPacket(ServerPacket &sp);
 
 #endif

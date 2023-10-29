@@ -33,6 +33,21 @@ void SendPacket(ServerPacket &sp) {
 	return ProcessPacketExec(sp.get());
 }
 
+// Delay Execution
+std::vector<std::vector<BYTE>> packet_queue;
+
+void DelaySendPacket(ServerPacket &sp) {
+	packet_queue.push_back(sp.get());
+}
+
+void DelayExecution() {
+	if (packet_queue.size()) {
+		auto &packet = packet_queue[0];
+		ProcessPacketExec(packet); // delay execution
+		packet_queue.erase(packet_queue.begin());
+	}
+}
+
 // Login Button Click
 DWORD (__thiscall *_LoginButton)(void *ecx) = NULL;
 DWORD __fastcall LoginButton_Hook(void *ecx) {
@@ -73,6 +88,12 @@ void __fastcall EnterSendPacket_Hook(OutPacket *op) {
 	FakeServer(cp);
 }
 
+void (__thiscall *_ProcessPacketCaller)(void *) = NULL;
+void __fastcall ProcessPacketCaller_Hook(void *ecx) {
+	_ProcessPacketCaller(ecx);
+	DelayExecution();
+}
+
 bool AutoResponseHook() {
 	Rosemary r;
 
@@ -87,6 +108,8 @@ bool AutoResponseHook() {
 		SHookFunction(EnterSendPacket, 0x0055F2A8);
 		// ignore connect checks for world select and character select
 		SHookFunction(ConnectCaller, 0x0055EFE2);
+		// delay execution test
+		SHookFunction(ProcessPacketCaller, 0x0055E926);
 
 		// patch
 		// portal id to map id

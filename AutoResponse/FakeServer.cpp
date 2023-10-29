@@ -466,7 +466,7 @@ void UpdateSkillPacket(TenviCharacter &chr, WORD skill_id) {
 	sp.Encode4(chr.id); // 00485E65, character id
 	sp.Encode2(skill_id); // 00485E6F, skill id
 	sp.Encode1(1); // 00485E7A, 0 = failed, 1 = success
-	SendPacket(sp);
+	DelaySendPacket(sp);
 }
 
 // 0x6D
