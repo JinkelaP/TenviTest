@@ -1,15 +1,34 @@
 #include"AutoResponse.h"
 
 DWORD Addr_OnPacketClass = 0;
+DWORD Addr_OnPacketClass2 = 0;
+DWORD Addr_OnPacket2 = 0;
+
+/*
+	0055E7E4 - 8B 10                 - mov edx,[eax]
+	0055E7E6 - 56                    - push esi
+	0055E7E7 - 8B C8                 - mov ecx,eax
+	0055E7E9 - FF 52 2C              - call dword ptr [edx+2C] // _OnPacket (its like CWvsContext::OnPacket)
+	0055E7EC - 8B 0D 90B16D00        - mov ecx,[006DB190]
+	0055E7F2 - 56                    - push esi
+	0055E7F3 - E8 BCA9F6FF           - call 004C91B4 // CField::OnPacket ?
+*/
 
 // ignore packet encryption
-void OnPacketDirectExec(InPacket *p) {
-	void *OnPacketClass = (void *)(*(DWORD *)(*(DWORD *)Addr_OnPacketClass + 0x160));
-	void (__thiscall *_OnPacket)(void *ecx, InPacket *p) = (decltype(_OnPacket)(*(DWORD *)(*(DWORD *)OnPacketClass + 0x2C)));
-	_OnPacket(OnPacketClass, p);
+void OnPacketDirectExec(InPacket *p, bool context = true) {
+	if (context) {
+		void *OnPacketClass = (void *)(*(DWORD *)(*(DWORD *)Addr_OnPacketClass + 0x160));
+		void(__thiscall *_OnPacket)(void *, InPacket *) = (decltype(_OnPacket)(*(DWORD *)(*(DWORD *)OnPacketClass + 0x2C)));
+		_OnPacket(OnPacketClass, p); // its like CWvsContext::OnPacket
+	}
+	else {
+		void *OnPacketClass2 = (void *)(*(DWORD *)Addr_OnPacketClass2);
+		void (__thiscall *_OnPacket2)(void *, InPacket*) = (decltype(_OnPacket2))Addr_OnPacket2;
+		_OnPacket2(OnPacketClass2, p);
+	}
 }
 
-void ProcessPacketExec(std::vector<BYTE> &packet) {
+void ProcessPacketExec(std::vector<BYTE> &packet, bool context = true) {
 	std::vector<BYTE> buffer;
 	// first 4 bytes
 	buffer.push_back(0);
@@ -26,11 +45,14 @@ void ProcessPacketExec(std::vector<BYTE> &packet) {
 	ip.packet = &buffer[0]; // real buffer
 	ip.length = (WORD)buffer.size(); // real buffer size
 
-	return OnPacketDirectExec(&ip);
+	return OnPacketDirectExec(&ip, context);
 }
 
 void SendPacket(ServerPacket &sp) {
 	return ProcessPacketExec(sp.get());
+}
+void SendPacket2(ServerPacket &sp) {
+	return ProcessPacketExec(sp.get(), false);
 }
 
 // Delay Execution
@@ -116,6 +138,9 @@ bool AutoResponseHook() {
 		r.Patch(0x0042D3DC + 2, L"18");
 		// disable spamming character movement packet
 		r.Patch(0x00459649, L"B8 01 00 00 00");
+
+		Addr_OnPacketClass2 = 0x006DB190;
+		Addr_OnPacket2 = 0x004C91B4;
 		return true;
 	}
 	case TENVI_CN: {
@@ -124,6 +149,9 @@ bool AutoResponseHook() {
 		SHookFunction(WorldSelectButton, 0x00533D74);
 		SHookFunction(EnterSendPacket, 0x0056AADB);
 		SHookFunction(ConnectCaller, 0x0056A4FD);
+
+		Addr_OnPacketClass2 = 0x006FAF70;
+		Addr_OnPacket2 = 0x004CBE34;
 		return true;
 	}
 	case TENVI_HK: {
@@ -132,6 +160,9 @@ bool AutoResponseHook() {
 		SHookFunction(WorldSelectButton, 0x0052DC5A);
 		SHookFunction(EnterSendPacket, 0x005AC927);
 		SHookFunction(ConnectCaller, 0x005832FE);
+
+		Addr_OnPacketClass2 = 0x0075CFAC;
+		Addr_OnPacket2 = 0x004BB0A5;
 		return true;
 	}
 	case TENVI_KR: {
@@ -140,6 +171,9 @@ bool AutoResponseHook() {
 		SHookFunction(WorldSelectButton, 0x00540E22);
 		SHookFunction(EnterSendPacket, 0x005CBA0F);
 		SHookFunction(ConnectCaller, 0x0059DED0);
+
+		Addr_OnPacketClass2 = 0x0075E1AC;
+		Addr_OnPacket2 = 0x004D017C;
 		return true;
 	}
 	default: {

@@ -30,7 +30,7 @@ TenviCharacter::TenviCharacter(std::wstring nName, BYTE nJob_Mask, WORD nJob, WO
 
 
 void TenviCharacter::TestSilva() {
-	//gcolor = 187;
+	gcolor = 187;
 	//hair = 137;
 	map = 8003;
 	//map = 8037;

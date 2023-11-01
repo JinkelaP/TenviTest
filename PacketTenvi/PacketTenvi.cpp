@@ -383,11 +383,16 @@ bool ListScan(Rosemary &r, ULONG_PTR &result, std::wstring aob[], size_t count, 
 }
 
 DWORD Addr_OnPacketClass = 0;
+DWORD Addr_OnPacketClass2 = 0;
+DWORD Addr_OnPacket2 = 0;
 
 void MyProcessPacket(InPacket *p) {
 	void *OnPacketClass = (void *)(*(DWORD *)(*(DWORD *)Addr_OnPacketClass + 0x160));
 	void(__thiscall *_OnPacket)(void *ecx, InPacket *p) = (decltype(_OnPacket)(*(DWORD *)(*(DWORD *)OnPacketClass + 0x2C)));
 	_OnPacket(OnPacketClass, p);
+	void *OnPacketClass2 = (void *)(*(DWORD *)Addr_OnPacketClass2);
+	void(__thiscall *_OnPacket2)(void *, InPacket*) = (decltype(_OnPacket2))Addr_OnPacket2;
+	_OnPacket2(OnPacketClass2, p);
 	PacketExtraInformation pxi = { packet_id_in++, (ULONG_PTR)0, DECODE_END, 0, 0 };
 	AddExtra(pxi);
 }
@@ -425,6 +430,8 @@ bool PacketHook() {
 		SHookFunction(DecodeWStr2, 0x0040921A);
 		SHookFunction(Decode8, 0x00402FC7);
 		SHookFunction(DecodeFloat, 0x00402F95);
+		Addr_OnPacketClass2 = 0x006DB190;
+		Addr_OnPacket2 = 0x004C91B4;
 		break;
 	}
 	case TENVI_CN: {
@@ -445,6 +452,9 @@ bool PacketHook() {
 		SHookFunction(DecodeWStr2, 0x00408EEF);
 		SHookFunction(Decode8, 0x00403434);
 		SHookFunction(DecodeFloat, 0x00403402);
+
+		Addr_OnPacketClass2 = 0x006FAF70;
+		Addr_OnPacket2 = 0x004CBE34;
 		break;
 	}
 	case TENVI_HK: {
@@ -463,6 +473,9 @@ bool PacketHook() {
 		SHookFunction(DecodeWStr2, 0x00469777);
 		SHookFunction(Decode8, 0x0040222C);
 		SHookFunction(DecodeFloat, 0x004021FA);
+
+		Addr_OnPacketClass2 = 0x0075CFAC;
+		Addr_OnPacket2 = 0x004BB0A5;
 		break;
 	}
 	case TENVI_KR: {
@@ -482,6 +495,9 @@ bool PacketHook() {
 		SHookFunction(DecodeWStr2, 0x0047B50E);
 		SHookFunction(Decode8, 0x00402213);
 		SHookFunction(DecodeFloat, 0x004021E1);
+
+		Addr_OnPacketClass2 = 0x0075E1AC;
+		Addr_OnPacket2 = 0x004D017C;
 		break;
 	}
 	default: {
