@@ -637,6 +637,21 @@ bool FakeServer(ClientPacket &cp) {
 		cp.Decode1(); // 1
 		cp.Decode1(); // 0
 		std::wstring message = cp.DecodeWStr1();
+
+		// command test
+		if (message.length() && message.at(0) == L'@') {
+			if (_wcsnicmp(message.c_str(), L"@map ", 5) == 0) {
+				int mapid = _wtoi(&message.c_str()[5]);
+
+				ChangeMapPacket(mapid);
+				TenviCharacter &chr = TA.GetOnline();
+				chr.map = mapid;
+				CharacterSpawn(chr);
+				InMapTeleportPacket(chr);
+			}
+			return true;
+		}
+
 		return true;
 	}
 	case CP_TIME_GET_TIME: {
