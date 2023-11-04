@@ -460,6 +460,13 @@ void PlayerStatPacket(TenviCharacter &chr) {
 	SendPacket(sp);
 }
 
+// 0x5C
+void EnterItemShopErrorPacket() {
+	ServerPacket sp(SP_ITEM_SHOP_ERROR);
+	sp.Encode1(1); // 004C93B9, error code 1-7
+	SendPacket(sp);
+}
+
 // 0x66
 void UpdateSkillPacket(TenviCharacter &chr, WORD skill_id) {
 	ServerPacket sp(SP_UPDATE_SKILL);
@@ -522,6 +529,57 @@ void BoardPacket(BoardAction action, std::wstring owner = L"", std::wstring msg 
 	}
 
 	SendPacket(sp);
+}
+
+// ========== Functions ==================
+void ChangeMap(WORD mapid) {
+	TenviCharacter &chr = TA.GetOnline();
+	chr.map = mapid;
+	ChangeMapPacket(chr.map);
+	CharacterSpawn(chr);
+	InMapTeleportPacket(chr);
+}
+
+void ItemShop(bool bEnter) {
+	TenviCharacter &chr = TA.GetOnline();
+	if (bEnter) {
+		ChangeMapPacket(MAPID_ITEM_SHOP);
+		CharacterSpawn(chr);
+		InMapTeleportPacket(chr);
+	}
+	else {
+		ChangeMapPacket(chr.map);
+		CharacterSpawn(chr);
+		InMapTeleportPacket(chr);
+	}
+}
+
+void Park(bool bEnter) {
+	TenviCharacter &chr = TA.GetOnline();
+	if (bEnter) {
+		ChangeMapPacket(MAPID_PARK);
+		CharacterSpawn(chr);
+		InMapTeleportPacket(chr);
+	}
+	else {
+		ChangeMapPacket(chr.map);
+		CharacterSpawn(chr);
+		InMapTeleportPacket(chr);
+	}
+}
+
+void Event(bool bEnter) {
+	TenviCharacter &chr = TA.GetOnline();
+	if (bEnter) {
+		ChangeMapPacket(MAPID_EVENT);
+		CharacterSpawn(chr);
+		InMapTeleportPacket(chr);
+	}
+	else {
+		ChangeMapPacket(chr.map);
+		CharacterSpawn(chr);
+		InMapTeleportPacket(chr);
+	}
 }
 
 // ========== TENVI Server Main ==========
@@ -609,6 +667,11 @@ bool FakeServer(ClientPacket &cp) {
 		std::wstring wText = cp.DecodeWStr1();
 		return true;
 	}
+	case CP_ITEM_SHOP: {
+		BYTE flag = cp.Decode1();
+		ItemShop(flag ? true : false);
+		return true;
+	}
 	case CP_USE_SP: {
 		TenviCharacter &chr = TA.GetOnline();
 		WORD skill_id = cp.Decode2();
@@ -652,6 +715,17 @@ bool FakeServer(ClientPacket &cp) {
 			return true;
 		}
 
+		return true;
+	}
+	case CP_PARK: {
+		BYTE flag = cp.Decode1();
+		Park(flag ? true : false);
+		return true;
+	}
+	case CP_PARK_BATTLE_FIELD: // ???
+	case CP_EVENT: {
+		BYTE flag = cp.Decode1();
+		Event(flag ? true : false);
 		return true;
 	}
 	case CP_TIME_GET_TIME: {
