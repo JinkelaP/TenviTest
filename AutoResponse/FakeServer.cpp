@@ -460,6 +460,14 @@ void PlayerStatPacket(TenviCharacter &chr) {
 	SendPacket(sp);
 }
 
+// 0x4B
+void EmotionPacket(TenviCharacter &chr, BYTE emotion) {
+	ServerPacket sp(SP_EMOTION);
+	sp.Encode4(chr.id); // 0048608E, character id
+	sp.Encode1(emotion); // 00486099, emotion
+	DelaySendPacket(sp);
+}
+
 // 0x5C
 void EnterItemShopErrorPacket() {
 	ServerPacket sp(SP_ITEM_SHOP_ERROR);
@@ -661,6 +669,12 @@ bool FakeServer(ClientPacket &cp) {
 		chr.UseAP(stat);
 		PlayerAPPacket(chr);
 		PlayerStatPacket(chr);
+		return true;
+	}
+	case CP_EMOTION: {
+		TenviCharacter &chr = TA.GetOnline();
+		BYTE emotion = cp.Decode1();
+		EmotionPacket(chr, emotion);
 		return true;
 	}
 	case CP_UPDATE_PROFILE: {
