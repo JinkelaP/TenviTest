@@ -24,15 +24,11 @@ void SetServerPacketHeader_CN_v126() {
 	header[SP_ACCOUNT_DATA] = 0x3D;
 	header[SP_PLAYER_LEVEL_UP] = 0x42;
 	header[SP_PLAYER_STAT_EXP] = 0x43;
-	//header[SP_PLAYER_STAT_SP] = 0x45;
-	//header[SP_PLAYER_STAT_AP] = 0x46;
-	//header[SP_PLAYER_STAT_ALL] = 0x47;
+	header[SP_PLAYER_STAT_SP] = 0x45;
+	header[SP_PLAYER_STAT_AP] = 0x46;
+	header[SP_PLAYER_STAT_ALL] = 0x47;
 	header[SP_EMOTION] = 0x4B;
 	header[SP_ITEM_SHOP_ERROR] = 0x5C;
-	header[SP_UPDATE_SKILL] = 0x66;
-	//header[SP_PLAYER_SKILL_ALL] = 0x6D;
-	header[SP_FRIEND_REQUEST] = 0x87;
-	header[SP_GUILD_RANK_DOWN] = 0x92;
-	header[SP_GM_MSG] = 0xD0;
+	header[SP_UPDATE_SKILL] = 0x65;
 	//header[SP_BOARD] = 0xE0;
 }

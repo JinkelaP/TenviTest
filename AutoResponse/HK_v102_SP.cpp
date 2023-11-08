@@ -24,4 +24,9 @@ void SetServerPacketHeader_HK_v102() {
 	header[SP_ACCOUNT_DATA] = 0x3D;
 	header[SP_PLAYER_LEVEL_UP] = 0x42;
 	header[SP_PLAYER_STAT_EXP] = 0x43;
+	header[SP_PLAYER_STAT_SP] = 0x45;
+	header[SP_PLAYER_STAT_AP] = 0x46;
+	header[SP_PLAYER_STAT_ALL] = 0x47;
+	header[SP_EMOTION] = 0x4B;
+	header[SP_UPDATE_SKILL] = 0x67;
 }

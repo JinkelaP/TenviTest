@@ -155,6 +155,7 @@ bool AutoResponseHook() {
 		SHookFunction(WorldSelectButton, 0x00533D74);
 		SHookFunction(EnterSendPacket, 0x0056AADB);
 		SHookFunction(ConnectCaller, 0x0056A4FD);
+		SHookFunction(ProcessPacketCaller, 0x0056A579);
 
 		Addr_OnPacketClass2 = 0x006FAF70;
 		Addr_OnPacket2 = 0x004CBE34;
@@ -172,6 +173,7 @@ bool AutoResponseHook() {
 		SHookFunction(WorldSelectButton, 0x0052DC5A);
 		SHookFunction(EnterSendPacket, 0x005AC927);
 		SHookFunction(ConnectCaller, 0x005832FE);
+		SHookFunction(ProcessPacketCaller, 0x005838C0);
 
 		Addr_OnPacketClass2 = 0x0075CFAC;
 		Addr_OnPacket2 = 0x004BB0A5;
@@ -189,6 +191,7 @@ bool AutoResponseHook() {
 		SHookFunction(WorldSelectButton, 0x00540E22);
 		SHookFunction(EnterSendPacket, 0x005CBA0F);
 		SHookFunction(ConnectCaller, 0x0059DED0);
+		SHookFunction(ProcessPacketCaller, 0x0059E328);
 
 		Addr_OnPacketClass2 = 0x0075E1AC;
 		Addr_OnPacket2 = 0x004D017C;

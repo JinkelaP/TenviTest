@@ -19,6 +19,7 @@ void SetClientPacketHeader_HK_v102() {
 	header[CP_TUTORIAL_LEAVE] = 0x21;
 	header[CP_ITEM_SHOP] = 0x39;
 	header[CP_USE_PORTAL] = 0x50;
+	header[CP_PLAYER_CHAT] = 0x57;
 	header[CP_PARK] = 0xC1;
 	header[CP_TIME_GET_TIME] = 0xC9;
 }

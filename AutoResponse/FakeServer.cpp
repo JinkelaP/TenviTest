@@ -454,18 +454,48 @@ void PlayerStatPacket(TenviCharacter &chr) {
 	sp.Encode2(129); // 004958CF, 回避率
 	sp.Encode2(189); // 004958F7, 物理クリティカル
 	sp.Encode2(2279); // 0049591F, 魔法クリティカル
+
+	if (GetRegion() == TENVI_KR) {
+		sp.Encode2(0);
+	}
+
 	sp.Encode2(131); // 00495947, 飛行スピード
 	sp.Encode2(100); // 0049596F, 歩行スピード
 	sp.Encode2(22); // 00495997, 炎抵抗力
 	sp.Encode2(23); // 004959B3, 氷抵抗力
-	sp.Encode2(24); // 004959CF, 生抵抗力
+
+	if (GetRegion() != TENVI_KR) {
+		sp.Encode2(24); // 004959CF, 生抵抗力
+	}
+
 	sp.Encode2(25); // 004959EB, 光抵抗力
 	sp.Encode2(26); // 00495A07, 闇抵抗力
-	sp.Encode2(0); // 00495A23, 力差分
-	sp.Encode2(0); // 00495A42, 敏捷差分
-	sp.Encode2(0); // 00495A61
-	sp.Encode2(0); // 00495A80
-	sp.Encode2(0); // 00495A9F
+
+	if (GetRegion() != TENVI_KR) {
+		sp.Encode2(0); // 00495A23, 力差分
+		sp.Encode2(0); // 00495A42, 敏捷差分
+		sp.Encode2(0); // 00495A61
+		sp.Encode2(0); // 00495A80
+		sp.Encode2(0); // 00495A9F
+	}
+	else {
+		sp.EncodeFloat(0.0);
+		sp.EncodeFloat(0.0);
+		sp.EncodeFloat(0.0);
+		sp.EncodeFloat(0.0);
+		sp.EncodeFloat(0.0);
+		sp.EncodeFloat(0.0);
+		sp.EncodeFloat(0.0);
+		sp.EncodeFloat(0.0);
+		sp.EncodeFloat(0.0);
+		sp.EncodeFloat(0.0);
+		sp.EncodeFloat(0.0);
+		sp.EncodeFloat(0.0);
+		sp.EncodeFloat(0.0);
+		sp.Encode4(0);
+	}
+
+
 	SendPacket(sp);
 }
 
@@ -474,7 +504,7 @@ void EmotionPacket(TenviCharacter &chr, BYTE emotion) {
 	ServerPacket sp(SP_EMOTION);
 	sp.Encode4(chr.id); // 0048608E, character id
 	sp.Encode1(emotion); // 00486099, emotion
-	DelaySendPacket(sp);
+	SendPacket(sp);
 }
 
 // 0x5C
