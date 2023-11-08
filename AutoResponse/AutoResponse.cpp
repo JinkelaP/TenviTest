@@ -158,6 +158,9 @@ bool AutoResponseHook() {
 
 		Addr_OnPacketClass2 = 0x006FAF70;
 		Addr_OnPacket2 = 0x004CBE34;
+
+		// portal id to map id
+		r.Patch(0x0042D569 + 0x02, L"18");
 		return true;
 	}
 	case TENVI_HK: {
@@ -172,6 +175,9 @@ bool AutoResponseHook() {
 
 		Addr_OnPacketClass2 = 0x0075CFAC;
 		Addr_OnPacket2 = 0x004BB0A5;
+
+		// portal id to map id
+		r.Patch(0x0041048F + 0x02, L"18");
 		return true;
 	}
 	case TENVI_KR: {
@@ -186,6 +192,9 @@ bool AutoResponseHook() {
 
 		Addr_OnPacketClass2 = 0x0075E1AC;
 		Addr_OnPacket2 = 0x004D017C;
+
+		// portal id to map id
+		r.Patch(0x0042429E + 0x02, L"18");
 		return true;
 	}
 	default: {
