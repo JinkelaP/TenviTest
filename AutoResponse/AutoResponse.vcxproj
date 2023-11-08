@@ -151,8 +151,12 @@
     <ClCompile Include="..\EmuMainTenvi\ConfigTenvi.cpp" />
     <ClCompile Include="AutoResponse.cpp" />
     <ClCompile Include="ClientPacket.cpp" />
+    <ClCompile Include="CN_v126_CP.cpp" />
     <ClCompile Include="DllMain.cpp" />
     <ClCompile Include="FakeServer.cpp" />
+    <ClCompile Include="HK_v102_CP.cpp" />
+    <ClCompile Include="JP_v127_CP.cpp" />
+    <ClCompile Include="KR_v107_CP.cpp" />
     <ClCompile Include="ServerPacket.cpp" />
     <ClCompile Include="CN_v126_SP.cpp" />
     <ClCompile Include="HK_v102_SP.cpp" />

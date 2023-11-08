@@ -1,9 +1,28 @@
 #include"ClientPacket.h"
 
+// static
+BYTE ClientPacket::opcode[CP_END] = { 0 };
+
+BYTE* ClientPacket::GetOpcode() {
+	return opcode;
+}
+
 ClientPacket::ClientPacket(BYTE *spacket, DWORD size) {
 	decoded = 0;
 	packet.resize(size);
 	memcpy_s(&packet[0], size, spacket, size);
+}
+
+CLIENT_PACKET ClientPacket::DecodeHeader() {
+	BYTE header = Decode1();
+
+	for (size_t i = 0; i < CP_END; i++) {
+		if (opcode[i] == header) {
+			return (CLIENT_PACKET)i;
+		}
+	}
+
+	return CP_UNKNOWN;
 }
 
 BYTE ClientPacket::Decode1() {

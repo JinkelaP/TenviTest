@@ -54,6 +54,18 @@
     <ClCompile Include="KR_v107_SP.cpp">
       <Filter>ソース ファイル\packet</Filter>
     </ClCompile>
+    <ClCompile Include="JP_v127_CP.cpp">
+      <Filter>ソース ファイル\packet</Filter>
+    </ClCompile>
+    <ClCompile Include="CN_v126_CP.cpp">
+      <Filter>ソース ファイル\packet</Filter>
+    </ClCompile>
+    <ClCompile Include="HK_v102_CP.cpp">
+      <Filter>ソース ファイル\packet</Filter>
+    </ClCompile>
+    <ClCompile Include="KR_v107_CP.cpp">
+      <Filter>ソース ファイル\packet</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AutoResponse.h">

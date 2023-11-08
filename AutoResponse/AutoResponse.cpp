@@ -122,6 +122,7 @@ bool AutoResponseHook() {
 	switch (GetRegion()) {
 	case TENVI_JP: {
 		SetServerPacketHeader_JP_v127();
+		SetClientPacketHeader_JP_v127();
 
 		Addr_OnPacketClass = 0x006DB164;
 		// press button to go world select
@@ -147,6 +148,7 @@ bool AutoResponseHook() {
 	}
 	case TENVI_CN: {
 		SetServerPacketHeader_CN_v126();
+		SetClientPacketHeader_CN_v126();
 
 		Addr_OnPacketClass = 0x006FAF44;
 		SHookFunction(LoginButton, 0x00532FEF);
@@ -160,6 +162,7 @@ bool AutoResponseHook() {
 	}
 	case TENVI_HK: {
 		SetServerPacketHeader_HK_v102();
+		SetClientPacketHeader_HK_v102();
 
 		Addr_OnPacketClass = 0x0075CF84;
 		SHookFunction(LoginButton, 0x0052CFC2);
@@ -173,6 +176,7 @@ bool AutoResponseHook() {
 	}
 	case TENVI_KR: {
 		SetServerPacketHeader_KR_v107();
+		SetClientPacketHeader_KR_v107();
 
 		Addr_OnPacketClass = 0x0075E184;
 		SHookFunction(LoginButton_KR, 0x004767A3);

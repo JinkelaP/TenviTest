@@ -496,7 +496,7 @@ void UpdateSkillPacket(TenviCharacter &chr, WORD skill_id) {
 // 0x6D
 void InitSkillPacket(TenviCharacter &chr) {
 	ServerPacket sp(SP_PLAYER_SKILL_ALL);
-	sp.Encode1(chr.skill.size()); // 0049977E, number of skills
+	sp.Encode1((BYTE)chr.skill.size()); // 0049977E, number of skills
 
 	for (auto v : chr.skill) {
 		sp.Encode1(1); // 00499792, idk
@@ -601,7 +601,7 @@ void Event(bool bEnter) {
 
 // ========== TENVI Server Main ==========
 bool FakeServer(ClientPacket &cp) {
-	CLIENTPACKET header = (CLIENTPACKET)cp.Decode1();
+	CLIENT_PACKET header = cp.DecodeHeader();
 
 	switch (header) {
 	// Select Character
