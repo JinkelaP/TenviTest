@@ -336,13 +336,22 @@ void AccountDataPacket(TenviCharacter &chr) {
 	sp.EncodeWStr1(chr.name); // 00498E79, character name
 	sp.EncodeWStr1(L""); // 00498EA5, ???
 	sp.Encode1(chr.job_mask); // 00498ECD
+
+	if (GetRegion() == TENVI_HK || GetRegion() == TENVI_KR) {
+		sp.Encode1(10); // unk
+	}
+
 	sp.Encode1((BYTE)chr.level); // 00498EF0
 	sp.Encode8(1234); // 00498F0C, EXP
 	sp.Encode8(77770503); // 00498F28, Coin (Gold, Silver, Bronze)
 	sp.Encode8(0); // 00498F44, ???
 	sp.Encode1(0); // 00498F60
 	sp.Encode1(0); // 00498F70
-	sp.Encode1(0); // 00498F80
+
+	if (GetRegion() == TENVI_JP || GetRegion() == TENVI_CN) {
+		sp.Encode1(0); // 00498F80
+	}
+
 	{
 		sp.EncodeWStr1(L"TENVI"); // 0057A877, Guild Name
 		{

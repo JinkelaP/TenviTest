@@ -1,8 +1,15 @@
 #include"ServerPacket.h"
 
+// static
+BYTE ServerPacket::opcode[SP_END] = { 0 };
+
+BYTE* ServerPacket::GetOpcode() {
+	return opcode;
+}
+
 // header = byte
-ServerPacket::ServerPacket(BYTE header) {
-	Encode1(header);
+ServerPacket::ServerPacket(SERVER_PACKET header) {
+	Encode1(opcode[header]);
 }
 
 std::vector<BYTE>& ServerPacket::get() {

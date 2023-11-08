@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ソース ファイル\packet">
+      <UniqueIdentifier>{8f0acc06-940b-4b35-98b0-9dddc76224c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\packet">
+      <UniqueIdentifier>{026b9d00-5d95-40d3-909d-274a5f15be0c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoResponse.cpp">
@@ -35,6 +41,18 @@
     </ClCompile>
     <ClCompile Include="..\EmuMainTenvi\ConfigTenvi.cpp">
       <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="CN_v126_SP.cpp">
+      <Filter>ソース ファイル\packet</Filter>
+    </ClCompile>
+    <ClCompile Include="HK_v102_SP.cpp">
+      <Filter>ソース ファイル\packet</Filter>
+    </ClCompile>
+    <ClCompile Include="JP_v127_SP.cpp">
+      <Filter>ソース ファイル\packet</Filter>
+    </ClCompile>
+    <ClCompile Include="KR_v107_SP.cpp">
+      <Filter>ソース ファイル\packet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

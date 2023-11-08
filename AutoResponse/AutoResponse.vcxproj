@@ -154,6 +154,10 @@
     <ClCompile Include="DllMain.cpp" />
     <ClCompile Include="FakeServer.cpp" />
     <ClCompile Include="ServerPacket.cpp" />
+    <ClCompile Include="CN_v126_SP.cpp" />
+    <ClCompile Include="HK_v102_SP.cpp" />
+    <ClCompile Include="JP_v127_SP.cpp" />
+    <ClCompile Include="KR_v107_SP.cpp" />
     <ClCompile Include="TemporaryData.cpp" />
   </ItemGroup>
   <ItemGroup>
