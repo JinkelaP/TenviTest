@@ -72,5 +72,6 @@ void SetServerPacketHeader_JP_v127();
 void SetServerPacketHeader_CN_v126();
 void SetServerPacketHeader_HK_v102();
 void SetServerPacketHeader_KRX_v107();
+void SetServerPacketHeader_KR_v200();
 
 #endif

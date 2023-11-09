@@ -500,6 +500,28 @@ bool PacketHook() {
 		Addr_OnPacket2 = 0x004D017C;
 		break;
 	}
+	case TENVI_KR: {
+		Addr_OnPacketClass = 0x00731764;
+		SHookFunction(EnterSendPacket, 0x00593F4B);
+		SHookFunction(COutPacket, 0x00594010);
+		SHookFunction(Encode1, 0x00417D2C);
+		SHookFunction(Encode2, 0x00401F89);
+		SHookFunction(Encode4, 0x00401FB1);
+		// #define Addr_Encode8 0x00401FD7
+		SHookFunction(EncodeWStr1, 0x0040FCA4);
+		SHookFunction(DecodeHeader, 0x00593FFA);
+		SHookFunction(Decode1, 0x00401E8A);
+		SHookFunction(Decode2, 0x00401EBC);
+		SHookFunction(Decode4, 0x00401EEF);
+		SHookFunction(DecodeWStr1, 0x0043B359);
+		SHookFunction(DecodeWStr2, 0x00468C36);
+		SHookFunction(Decode8, 0x00401F53);
+		SHookFunction(DecodeFloat, 0x00401F21);
+
+		Addr_OnPacketClass2 = 0x0073178C;
+		Addr_OnPacket2 = 0x004B202F;
+		break;
+	}
 	default: {
 		break;
 	}

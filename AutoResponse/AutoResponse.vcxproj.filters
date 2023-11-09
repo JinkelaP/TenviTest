@@ -66,6 +66,12 @@
     <ClCompile Include="KRX_v107_SP.cpp">
       <Filter>ソース ファイル\packet</Filter>
     </ClCompile>
+    <ClCompile Include="KR_v200_CP.cpp">
+      <Filter>ソース ファイル\packet</Filter>
+    </ClCompile>
+    <ClCompile Include="KR_v200_SP.cpp">
+      <Filter>ソース ファイル\packet</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AutoResponse.h">

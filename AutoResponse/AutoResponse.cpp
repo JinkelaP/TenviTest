@@ -200,6 +200,24 @@ bool AutoResponseHook() {
 		r.Patch(0x0042429E + 0x02, L"18");
 		return true;
 	}
+	case TENVI_KR: {
+		SetServerPacketHeader_KR_v200();
+		SetClientPacketHeader_KR_v200();
+
+		Addr_OnPacketClass = 0x00731764;
+		//SHookFunction(LoginButton_KR, 0x004013C8);
+		SHookFunction(WorldSelectButton, 0x0051CD40);
+		SHookFunction(EnterSendPacket, 0x00593F4B);
+		SHookFunction(ConnectCaller, 0x00566AB8);
+		SHookFunction(ProcessPacketCaller, 0x00566EF8);
+
+		Addr_OnPacketClass2 = 0x0073178C;
+		Addr_OnPacket2 = 0x004B202F;
+
+		// portal id to map id
+		r.Patch(0x00410513 + 0x02, L"18");
+		return true;
+	}
 	default: {
 		break;
 	}

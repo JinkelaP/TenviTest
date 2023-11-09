@@ -157,6 +157,8 @@
     <ClCompile Include="HK_v102_CP.cpp" />
     <ClCompile Include="JP_v127_CP.cpp" />
     <ClCompile Include="KRX_v107_CP.cpp" />
+    <ClCompile Include="KR_v200_CP.cpp" />
+    <ClCompile Include="KR_v200_SP.cpp" />
     <ClCompile Include="ServerPacket.cpp" />
     <ClCompile Include="CN_v126_SP.cpp" />
     <ClCompile Include="HK_v102_SP.cpp" />

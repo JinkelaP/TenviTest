@@ -35,6 +35,12 @@ void CharacterSelectPacket() {
 	sp.Encode1(0); // 00492CE6, 0 = OK, 1 = login error
 	sp.Encode4(-1); // 00492D5B saved to pointer
 	sp.Encode1(0); // 00492D65 saved to pointer
+
+	if (GetRegion() == TENVI_KR) {
+		sp.Encode1(0);
+		sp.EncodeWStr1(L"Tenvi KR v200");
+	}
+
 	SendPacket(sp);
 }
 
@@ -44,7 +50,7 @@ void CharacterListPacket() {
 	ServerPacket sp(SP_CHARACTER_LIST);
 	sp.Encode1(0); // Number of Characters
 	sp.Encode1(character_slot); // Number of Character Slot
-	SendPacket(sp);
+	DelaySendPacket(sp);
 }
 
 void CharacterListPacket_Test() {
@@ -72,6 +78,10 @@ void CharacterListPacket_Test() {
 			sp.Encode2(gequip);
 		}
 		sp.Encode2(chr.map); // mapid
+	}
+
+	if (GetRegion() == TENVI_KR) {
+		sp.Encode1(0);
 	}
 
 	sp.Encode1(TA.slot); // character slots
@@ -299,7 +309,7 @@ void CharacterSpawn(TenviCharacter &chr) {
 	sp.Encode1(0); // 0048E773
 	sp.Encode1(0); // 0048E780
 
-	if (GetRegion() == TENVI_HK || GetRegion() == TENVI_KRX) {
+	if (GetRegion() == TENVI_HK || GetRegion() == TENVI_KR || GetRegion() == TENVI_KRX) {
 		sp.Encode1(0);
 		sp.Encode1(0);
 	}
@@ -378,7 +388,7 @@ void AccountDataPacket(TenviCharacter &chr) {
 		sp.Encode1(5 * 8); // 00499024, Cash Slot
 		sp.Encode1(4 * 10); // 00499024, Card Slots
 
-		if (GetRegion() == TENVI_HK || GetRegion() == TENVI_KRX) {
+		if (GetRegion() == TENVI_HK || GetRegion() == TENVI_KR || GetRegion() == TENVI_KRX) {
 			sp.Encode1(4); // unk
 		}
 
