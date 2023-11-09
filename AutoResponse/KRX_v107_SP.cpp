@@ -1,6 +1,6 @@
 #include"ServerPacket.h"
 
-void SetServerPacketHeader_KR_v107() {
+void SetServerPacketHeader_KRX_v107() {
 	BYTE *header = ServerPacket::GetOpcode();
 
 	header[SP_VERSION] = 0x01;

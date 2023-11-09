@@ -41,6 +41,12 @@ bool LoadRegionConfig(HINSTANCE hinstDLL) {
 		return true;
 	}
 
+	if (wRegion.compare(L"KRX") == 0) {
+		DEBUG(L"LoadRegionConfig - KRX");
+		SetRegion(TENVI_KRX);
+		return true;
+	}
+
 	DEBUG(L"LoadRegionConfig - JP");
 	SetRegion(TENVI_JP);
 	return true;

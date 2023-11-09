@@ -182,9 +182,9 @@ bool AutoResponseHook() {
 		r.Patch(0x0041048F + 0x02, L"18");
 		return true;
 	}
-	case TENVI_KR: {
-		SetServerPacketHeader_KR_v107();
-		SetClientPacketHeader_KR_v107();
+	case TENVI_KRX: {
+		SetServerPacketHeader_KRX_v107();
+		SetClientPacketHeader_KRX_v107();
 
 		Addr_OnPacketClass = 0x0075E184;
 		SHookFunction(LoginButton_KR, 0x004767A3);

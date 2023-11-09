@@ -221,7 +221,7 @@ void CharacterSpawn(TenviCharacter &chr) {
 	sp.Encode1(chr.job_mask); // 0048DC08
 	sp.Encode1((BYTE)chr.level); // 0048DC2B
 
-	if (GetRegion() == TENVI_HK || GetRegion() == TENVI_KR) {
+	if (GetRegion() == TENVI_HK || GetRegion() == TENVI_KRX) {
 		sp.Encode1(1);
 	}
 
@@ -299,7 +299,7 @@ void CharacterSpawn(TenviCharacter &chr) {
 	sp.Encode1(0); // 0048E773
 	sp.Encode1(0); // 0048E780
 
-	if (GetRegion() == TENVI_HK || GetRegion() == TENVI_KR) {
+	if (GetRegion() == TENVI_HK || GetRegion() == TENVI_KRX) {
 		sp.Encode1(0);
 		sp.Encode1(0);
 	}
@@ -337,7 +337,7 @@ void AccountDataPacket(TenviCharacter &chr) {
 	sp.EncodeWStr1(L""); // 00498EA5, ???
 	sp.Encode1(chr.job_mask); // 00498ECD
 
-	if (GetRegion() == TENVI_HK || GetRegion() == TENVI_KR) {
+	if (GetRegion() == TENVI_HK || GetRegion() == TENVI_KRX) {
 		sp.Encode1(10); // unk
 	}
 
@@ -378,7 +378,7 @@ void AccountDataPacket(TenviCharacter &chr) {
 		sp.Encode1(5 * 8); // 00499024, Cash Slot
 		sp.Encode1(4 * 10); // 00499024, Card Slots
 
-		if (GetRegion() == TENVI_HK || GetRegion() == TENVI_KR) {
+		if (GetRegion() == TENVI_HK || GetRegion() == TENVI_KRX) {
 			sp.Encode1(4); // unk
 		}
 
@@ -455,7 +455,7 @@ void PlayerStatPacket(TenviCharacter &chr) {
 	sp.Encode2(189); // 004958F7, ï®óùÉNÉäÉeÉBÉJÉã
 	sp.Encode2(2279); // 0049591F, ñÇñ@ÉNÉäÉeÉBÉJÉã
 
-	if (GetRegion() == TENVI_KR) {
+	if (GetRegion() == TENVI_KRX) {
 		sp.Encode2(0);
 	}
 
@@ -464,14 +464,14 @@ void PlayerStatPacket(TenviCharacter &chr) {
 	sp.Encode2(22); // 00495997, âäíÔçRóÕ
 	sp.Encode2(23); // 004959B3, ïXíÔçRóÕ
 
-	if (GetRegion() != TENVI_KR) {
+	if (GetRegion() != TENVI_KRX) {
 		sp.Encode2(24); // 004959CF, ê∂íÔçRóÕ
 	}
 
 	sp.Encode2(25); // 004959EB, åıíÔçRóÕ
 	sp.Encode2(26); // 00495A07, à≈íÔçRóÕ
 
-	if (GetRegion() != TENVI_KR) {
+	if (GetRegion() != TENVI_KRX) {
 		sp.Encode2(0); // 00495A23, óÕç∑ï™
 		sp.Encode2(0); // 00495A42, ïqè∑ç∑ï™
 		sp.Encode2(0); // 00495A61

@@ -1,6 +1,6 @@
 #include"ClientPacket.h"
 
-void SetClientPacketHeader_KR_v107() {
+void SetClientPacketHeader_KRX_v107() {
 	BYTE *header = ClientPacket::GetOpcode();
 
 	header[CP_VERSION] = 0x01;

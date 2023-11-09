@@ -65,6 +65,6 @@ public:
 void SetClientPacketHeader_JP_v127();
 void SetClientPacketHeader_CN_v126();
 void SetClientPacketHeader_HK_v102();
-void SetClientPacketHeader_KR_v107();
+void SetClientPacketHeader_KRX_v107();
 
 #endif

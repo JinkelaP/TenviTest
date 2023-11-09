@@ -478,7 +478,7 @@ bool PacketHook() {
 		Addr_OnPacket2 = 0x004BB0A5;
 		break;
 	}
-	case TENVI_KR: {
+	case TENVI_KRX: {
 		Addr_OnPacketClass = 0x0075E184;
 		SHookFunction(EnterSendPacket, 0x005CBA0F);
 		SHookFunction(COutPacket, 0x005CBAD4);

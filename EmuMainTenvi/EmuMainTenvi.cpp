@@ -47,7 +47,7 @@ bool EmuMainTenvi() {
 		r.JMP(0x004815EC, 0x00481603);
 		return true;
 	}
-	case TENVI_KR: {
+	case TENVI_KRX: {
 		// GG Init 1
 		r.Patch(0x00630A3E, L"90 90 90 90 90");
 		// GG Init 2
@@ -58,6 +58,20 @@ bool EmuMainTenvi() {
 		r.JMP(0x004931C4, 0x004931DB);
 		// Login Error Bypass
 		r.Patch(0x0048473C, L"90 90 90 90 90");
+		return true;
+	}
+	case TENVI_KR: {
+		// GG Init 1
+		r.Patch(0x00663C2D, L"90 90 90 90 90");
+		// GG Init 2
+		// 81 7D ?? ?? ?? ?? ?? 74 ?? FF 75 ?? E8
+		r.Patch(0x0047EC60, L"EB");
+		// GG HeartBeat
+		r.JMP(0x00471E38, 0x00471E69);
+		// Ignore Launcher
+		r.Patch(0x0047ECAB, L"EB");
+		// Login Error Bypass
+		r.Patch(0x00472515, L"90 90 90 90 90");
 		return true;
 	}
 	default: {
