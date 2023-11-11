@@ -17,6 +17,7 @@ void SetClientPacketHeader_JP_v127() {
 	header[CP_EMOTION] = 0x1C;
 	header[CP_UPDATE_PROFILE] = 0x20;
 	header[CP_TUTORIAL_LEAVE] = 0x21;
+	header[CP_WORLD_MAP_OPEN] = 0x23;
 	header[CP_ITEM_SHOP] = 0x38;
 	header[CP_USE_SP] = 0x45;
 	header[CP_USE_PORTAL] = 0x4E;

@@ -28,5 +28,6 @@ void SetServerPacketHeader_HK_v102() {
 	header[SP_PLAYER_STAT_AP] = 0x46;
 	header[SP_PLAYER_STAT_ALL] = 0x47;
 	header[SP_EMOTION] = 0x4B;
+	header[SP_WORLD_MAP_UPDATE] = 0x54;
 	header[SP_UPDATE_SKILL] = 0x67;
 }

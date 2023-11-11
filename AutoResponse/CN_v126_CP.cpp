@@ -14,6 +14,7 @@ void SetClientPacketHeader_CN_v126() {
 	header[CP_PLAYER_MOVE] = 0x19;
 	header[CP_USE_AP] = 0x1A;
 	header[CP_EMOTION] = 0x1C;
+	header[CP_WORLD_MAP_OPEN] = 0x23;
 	header[CP_ITEM_SHOP] = 0x38;
 	header[CP_USE_SP] = 0x45;
 	header[CP_USE_PORTAL] = 0x4E;

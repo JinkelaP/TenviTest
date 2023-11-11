@@ -205,13 +205,13 @@ void ChangeMapPacket(WORD mapid) {
 	ServerPacket sp(SP_MAP_CHANGE);
 	sp.Encode1(0); // error code = 37
 	sp.Encode2(mapid); // mapid
-	sp.Encode1(0);
+	sp.Encode1(0); // 1 = empty map?
 	sp.Encode4(0);
 	sp.Encode4(0); // float value
 	sp.Encode4(0); // float value
 	sp.Encode1(0);
 	sp.Encode1(0);
-	sp.Encode1(0);
+	sp.Encode1(0); // disable item shop and park
 	sp.Encode1(0);
 	sp.Encode4(0);
 	SendPacket(sp);
@@ -517,6 +517,51 @@ void EmotionPacket(TenviCharacter &chr, BYTE emotion) {
 	SendPacket(sp);
 }
 
+// 0x54
+void WorldMapUpdatePacket(BYTE area_code) {
+	ServerPacket sp(SP_WORLD_MAP_UPDATE);
+	sp.Encode1(area_code); // 00496E95
+	sp.Encode1(0); // 00496EB7
+	sp.Encode1(1); // 00496ED7
+	sp.Encode1(area_code); // 00496EE7
+	DelaySendPacket(sp);
+}
+
+void WorldMapUpdatePacketTest(BYTE area_code) {
+	ServerPacket sp(SP_WORLD_MAP_UPDATE);
+	sp.Encode1(area_code);
+
+	for (int i = 1; i < 256; i++) {
+		sp.Encode1((BYTE)i);
+	}
+	sp.Encode1(0);
+
+	std::vector<BYTE> activated_area;
+
+	activated_area.push_back(8); // シルヴァアイランド
+	activated_area.push_back(2); // リブラアイランド
+	activated_area.push_back(5); // タリーB1アイランド
+	activated_area.push_back(6); // ミノスアイランド
+
+	if (GetRegion() != TENVI_HK) {
+		activated_area.push_back(1); // ビキウィニーアイランド
+		activated_area.push_back(3); // ファントムアイランド
+		activated_area.push_back(4); // プチポチパーク
+	}
+
+	if (GetRegion() == TENVI_HK || GetRegion() == TENVI_KR || GetRegion() == TENVI_KRX) {
+		activated_area.push_back(7); // 蓋亞藩
+	}
+
+	sp.Encode1(activated_area.size()); // Number of Islands
+	for (auto &v : activated_area) {
+		sp.Encode1(v);
+	}
+
+	DelaySendPacket(sp);
+}
+
+
 // 0x5C
 void EnterItemShopErrorPacket() {
 	ServerPacket sp(SP_ITEM_SHOP_ERROR);
@@ -728,6 +773,13 @@ bool FakeServer(ClientPacket &cp) {
 	}
 	case CP_UPDATE_PROFILE: {
 		std::wstring wText = cp.DecodeWStr1();
+		return true;
+	}
+	case CP_WORLD_MAP_OPEN:
+	{
+		BYTE area_code = cp.Decode1();
+		//WorldMapUpdatePacket(area_code);
+		WorldMapUpdatePacketTest(area_code);
 		return true;
 	}
 	case CP_ITEM_SHOP: {
