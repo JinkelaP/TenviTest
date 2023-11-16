@@ -165,14 +165,22 @@
     <ClCompile Include="JP_v127_SP.cpp" />
     <ClCompile Include="KRX_v107_SP.cpp" />
     <ClCompile Include="TemporaryData.cpp" />
+    <ClCompile Include="TenviData.cpp" />
+    <ClCompile Include="TenviMap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\EmuMainTenvi\ConfigTenvi.h" />
     <ClInclude Include="AutoResponse.h" />
     <ClInclude Include="ClientPacket.h" />
     <ClInclude Include="FakeServer.h" />
+    <ClInclude Include="rapidxml\rapidxml.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_iterators.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_print.hpp" />
+    <ClInclude Include="rapidxml\rapidxml_utils.hpp" />
     <ClInclude Include="ServerPacket.h" />
     <ClInclude Include="TemporaryData.h" />
+    <ClInclude Include="TenviData.h" />
+    <ClInclude Include="TenviMap.h" />
     <ClInclude Include="TenviPacket.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

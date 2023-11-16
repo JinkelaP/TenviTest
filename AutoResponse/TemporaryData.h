@@ -33,6 +33,7 @@ public:
 	WORD cloth;
 	WORD gcolor; // guadian
 	WORD map;
+	WORD map_return;
 	BYTE level;
 	WORD sp; // skill point
 	WORD ap;
@@ -42,6 +43,9 @@ public:
 	WORD stat_hp; // ‘Ì—Í
 	WORD stat_int; // ’m”\
 	WORD stat_mp; //’mŒb
+	// data
+	float x;
+	float y;
 
 	std::vector<WORD> equipped;
 	std::vector<WORD> gequipped;
@@ -52,6 +56,7 @@ public:
 	void TestSilva();
 	bool UseSP(WORD skill_id);
 	bool UseAP(BYTE stat_id);
+	void SetMapReturn(WORD map_return_id);
 };
 
 class TenviAccount {

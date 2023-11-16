@@ -13,6 +13,7 @@ enum Region {
 
 Region GetRegion();
 bool LoadRegionConfig(HINSTANCE hinstDLL);
-
+std::wstring GetRegionStr();
+std::wstring GetXMLPath();
 
 #endif

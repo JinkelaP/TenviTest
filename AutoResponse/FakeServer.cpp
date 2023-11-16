@@ -201,14 +201,14 @@ void MapResetPacket() {
 }
 
 // 0x10
-void ChangeMapPacket(WORD mapid) {
+void ChangeMapPacket(WORD mapid, float x = 0, float y = 0) {
 	ServerPacket sp(SP_MAP_CHANGE);
 	sp.Encode1(0); // error code = 37
 	sp.Encode2(mapid); // mapid
 	sp.Encode1(0); // 1 = empty map?
 	sp.Encode4(0);
-	sp.Encode4(0); // float value
-	sp.Encode4(0); // float value
+	sp.EncodeFloat(x); // float value
+	sp.EncodeFloat(y); // float value
 	sp.Encode1(0);
 	sp.Encode1(0);
 	sp.Encode1(0); // disable item shop and park
@@ -218,11 +218,11 @@ void ChangeMapPacket(WORD mapid) {
 }
 
 // 0x11
-void CharacterSpawn(TenviCharacter &chr) {
+void CharacterSpawnPacket(TenviCharacter &chr, float x = 0, float y = 0) {
 	ServerPacket sp(SP_CHARACTER_SPAWN);
 	sp.Encode4(chr.id); // 0048DB9B id, where checks id?
-	sp.Encode4(0); // 0048DBA5, coordinate x
-	sp.Encode4(0); // 0048DBAF, corrdinate y
+	sp.EncodeFloat(x); // 0048DBA5, coordinate x
+	sp.EncodeFloat(y); // 0048DBAF, corrdinate y
 	sp.Encode1(0); // 0048DBB9, direction 0 = left, 1 = right
 	sp.Encode1(1); // 0048DBC6, guardian, 0 = guardian off, 1 = guardian on
 	sp.Encode1(1); // 0048DBD3, death, 0 = death, 1 = alive
@@ -634,53 +634,68 @@ void BoardPacket(BoardAction action, std::wstring owner = L"", std::wstring msg 
 }
 
 // ========== Functions ==================
-void ChangeMap(WORD mapid) {
-	TenviCharacter &chr = TA.GetOnline();
-	chr.map = mapid;
-	ChangeMapPacket(chr.map);
-	CharacterSpawn(chr);
-	InMapTeleportPacket(chr);
+
+// go to map
+void ChangeMap(TenviCharacter &chr, WORD map_id, float x, float y) {
+	ChangeMapPacket(map_id, x, y);
+	
+	switch (map_id) {
+	case MAPID_ITEM_SHOP:
+	case MAPID_EVENT:
+	case MAPID_PARK:
+	{
+		// do not change last map id
+		chr.SetMapReturn(chr.map);
+		break;
+	}
+	default:
+	{
+		chr.SetMapReturn(chr.map);
+		chr.map = map_id;
+		break;
+	}
+	}
+	CharacterSpawnPacket(chr, x, y);
 }
 
-void ItemShop(bool bEnter) {
-	TenviCharacter &chr = TA.GetOnline();
+// enter map by login or something
+void SetMap(TenviCharacter &chr, WORD map_id) {
+	TenviSpawnPoint spawn_point = tenvi_data.get_map(map_id)->FindSpawnPoint(0);
+	ChangeMap(chr, map_id, spawn_point.x, spawn_point.y);
+}
+
+// enter map by portal
+void UsePortal(TenviCharacter &chr, DWORD portal_id) {
+	TenviPortal portal = tenvi_data.get_map(chr.map)->FindPortal(portal_id); // current map
+	TenviPortal next_portal = tenvi_data.get_map(portal.next_mapid)->FindPortal(portal.next_id); // next map
+
+	ChangeMap(chr, portal.next_mapid, next_portal.x, next_portal.y);
+}
+
+void ItemShop(TenviCharacter &chr, bool bEnter) {
 	if (bEnter) {
-		ChangeMapPacket(MAPID_ITEM_SHOP);
-		CharacterSpawn(chr);
-		InMapTeleportPacket(chr);
+		SetMap(chr, MAPID_ITEM_SHOP);
 	}
 	else {
-		ChangeMapPacket(chr.map);
-		CharacterSpawn(chr);
-		InMapTeleportPacket(chr);
+		SetMap(chr, chr.map_return);
 	}
 }
 
-void Park(bool bEnter) {
-	TenviCharacter &chr = TA.GetOnline();
+void Park(TenviCharacter &chr, bool bEnter) {
 	if (bEnter) {
-		ChangeMapPacket(MAPID_PARK);
-		CharacterSpawn(chr);
-		InMapTeleportPacket(chr);
+		SetMap(chr, MAPID_PARK);
 	}
 	else {
-		ChangeMapPacket(chr.map);
-		CharacterSpawn(chr);
-		InMapTeleportPacket(chr);
+		SetMap(chr, chr.map_return);
 	}
 }
 
-void Event(bool bEnter) {
-	TenviCharacter &chr = TA.GetOnline();
+void Event(TenviCharacter &chr, bool bEnter) {
 	if (bEnter) {
-		ChangeMapPacket(MAPID_EVENT);
-		CharacterSpawn(chr);
-		InMapTeleportPacket(chr);
+		SetMap(chr, MAPID_EVENT);
 	}
 	else {
-		ChangeMapPacket(chr.map);
-		CharacterSpawn(chr);
-		InMapTeleportPacket(chr);
+		SetMap(chr, chr.map_return);
 	}
 }
 
@@ -698,6 +713,8 @@ bool FakeServer(ClientPacket &cp) {
 
 		for (auto &chr : TA.GetCharacters()) {
 			if (chr.id == character_id) {
+				chr.x = 0.0;
+				chr.y = 0.0;
 				GetGameServerPacket(); // notify game server ip
 				ConnectedPacket(); // connected
 				AccountDataPacket(chr);
@@ -705,8 +722,8 @@ bool FakeServer(ClientPacket &cp) {
 				PlayerSPPacket(chr);
 				PlayerAPPacket(chr);
 				InitSkillPacket(chr);
-				ChangeMapPacket(chr.map); // map change
-				CharacterSpawn(chr); // character spawn
+
+				SetMap(chr, chr.map);
 				BoardPacket(Board_Spawn, L"Riremito", L"Tenvi JP v127");
 				BoardPacket(Board_AddInfo, L"Riremito", L"Tenvi JP v127");
 				return true;
@@ -784,7 +801,7 @@ bool FakeServer(ClientPacket &cp) {
 	}
 	case CP_ITEM_SHOP: {
 		BYTE flag = cp.Decode1();
-		ItemShop(flag ? true : false);
+		ItemShop(TA.GetOnline(), flag ? true : false);
 		return true;
 	}
 	case CP_USE_SP: {
@@ -796,14 +813,10 @@ bool FakeServer(ClientPacket &cp) {
 		return true;
 	}
 	case CP_USE_PORTAL: {
-		// hack, portal id to map id
-		WORD mapid = (WORD)cp.Decode4(); // mapid
-		//cp.DecodeWStr1();
-		ChangeMapPacket(mapid);
 		TenviCharacter &chr = TA.GetOnline();
-		chr.map = mapid;
-		CharacterSpawn(chr);
-		InMapTeleportPacket(chr);
+		DWORD portal_id = cp.Decode4();
+		// cp.DecodeWStr1();
+		UsePortal(chr, portal_id);
 		return true;
 	}
 	case CP_CHANGE_CHANNEL: {
@@ -819,13 +832,8 @@ bool FakeServer(ClientPacket &cp) {
 		// command test
 		if (message.length() && message.at(0) == L'@') {
 			if (_wcsnicmp(message.c_str(), L"@map ", 5) == 0) {
-				int mapid = _wtoi(&message.c_str()[5]);
-
-				ChangeMapPacket(mapid);
-				TenviCharacter &chr = TA.GetOnline();
-				chr.map = mapid;
-				CharacterSpawn(chr);
-				InMapTeleportPacket(chr);
+				int map_id = _wtoi(&message.c_str()[5]);
+				SetMap(TA.GetOnline(), map_id);
 			}
 			return true;
 		}
@@ -834,13 +842,13 @@ bool FakeServer(ClientPacket &cp) {
 	}
 	case CP_PARK: {
 		BYTE flag = cp.Decode1();
-		Park(flag ? true : false);
+		Park(TA.GetOnline(), flag ? true : false);
 		return true;
 	}
 	case CP_PARK_BATTLE_FIELD: // ???
 	case CP_EVENT: {
 		BYTE flag = cp.Decode1();
-		Event(flag ? true : false);
+		Event(TA.GetOnline(), flag ? true : false);
 		return true;
 	}
 	case CP_TIME_GET_TIME: {

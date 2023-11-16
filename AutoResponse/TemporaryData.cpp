@@ -17,6 +17,7 @@ TenviCharacter::TenviCharacter(std::wstring nName, BYTE nJob_Mask, WORD nJob, WO
 	gequipped = nGEquipped;
 	gequipped.resize(15);
 	map = 2002;
+	map_return = 0;
 	level = 30;
 	sp = 500;
 	ap = 300;
@@ -26,8 +27,13 @@ TenviCharacter::TenviCharacter(std::wstring nName, BYTE nJob_Mask, WORD nJob, WO
 	stat_hp = 199;
 	stat_int = 712;
 	stat_mp = 158;
+	x = 0.0;
+	y = 0.0;
 }
 
+void TenviCharacter::SetMapReturn(WORD map_return_id) {
+	map_return = map_return_id;
+}
 
 void TenviCharacter::TestSilva() {
 	gcolor = 187;

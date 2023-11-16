@@ -138,7 +138,7 @@ bool AutoResponseHook() {
 
 		// patch
 		// portal id to map id
-		r.Patch(0x0042D3DC + 2, L"18");
+		//r.Patch(0x0042D3DC + 2, L"18");
 		// disable spamming character movement packet
 		r.Patch(0x00459649, L"B8 01 00 00 00");
 
@@ -161,7 +161,7 @@ bool AutoResponseHook() {
 		Addr_OnPacket2 = 0x004CBE34;
 
 		// portal id to map id
-		r.Patch(0x0042D569 + 0x02, L"18");
+		//r.Patch(0x0042D569 + 0x02, L"18");
 		return true;
 	}
 	case TENVI_HK: {
@@ -215,7 +215,7 @@ bool AutoResponseHook() {
 		Addr_OnPacket2 = 0x004B202F;
 
 		// portal id to map id
-		r.Patch(0x00410513 + 0x02, L"18");
+		//r.Patch(0x00410513 + 0x02, L"18");
 		return true;
 	}
 	default: {

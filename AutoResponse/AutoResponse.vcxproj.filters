@@ -19,6 +19,15 @@
     <Filter Include="ヘッダー ファイル\packet">
       <UniqueIdentifier>{026b9d00-5d95-40d3-909d-274a5f15be0c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\rapidxml">
+      <UniqueIdentifier>{f3a06c6a-c646-4cee-a54c-059913e67166}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\data">
+      <UniqueIdentifier>{cb11d102-5ff2-4fe9-ba80-10f19f3ac4d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\data">
+      <UniqueIdentifier>{05f8053e-d472-4893-ab20-0078685cb291}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AutoResponse.cpp">
@@ -72,6 +81,12 @@
     <ClCompile Include="KR_v200_SP.cpp">
       <Filter>ソース ファイル\packet</Filter>
     </ClCompile>
+    <ClCompile Include="TenviMap.cpp">
+      <Filter>ソース ファイル\data</Filter>
+    </ClCompile>
+    <ClCompile Include="TenviData.cpp">
+      <Filter>ソース ファイル\data</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AutoResponse.h">
@@ -94,6 +109,24 @@
     </ClInclude>
     <ClInclude Include="..\EmuMainTenvi\ConfigTenvi.h">
       <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidxml\rapidxml.hpp">
+      <Filter>ヘッダー ファイル\rapidxml</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidxml\rapidxml_iterators.hpp">
+      <Filter>ヘッダー ファイル\rapidxml</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidxml\rapidxml_print.hpp">
+      <Filter>ヘッダー ファイル\rapidxml</Filter>
+    </ClInclude>
+    <ClInclude Include="rapidxml\rapidxml_utils.hpp">
+      <Filter>ヘッダー ファイル\rapidxml</Filter>
+    </ClInclude>
+    <ClInclude Include="TenviMap.h">
+      <Filter>ヘッダー ファイル\data</Filter>
+    </ClInclude>
+    <ClInclude Include="TenviData.h">
+      <Filter>ヘッダー ファイル\data</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
