@@ -197,7 +197,7 @@ bool AutoResponseHook() {
 		Addr_OnPacket2 = 0x004D017C;
 
 		// portal id to map id
-		r.Patch(0x0042429E + 0x02, L"18");
+		//r.Patch(0x0042429E + 0x02, L"18");
 		return true;
 	}
 	case TENVI_KR: {

@@ -3,9 +3,12 @@
 + JP v127
 + CN v126
 + HK v102
-+ KR v107 (Xtream)
++ KR v200
++ KRX v107 (Xtream)
 
 ## Files
++ https://github.com/Riremito/tv_xml
+	+ data xml
 + RunEmuTenvi.exe
 	+ DLL injector
 	+ you need to edit RunEmuTenvi.ini to use it
