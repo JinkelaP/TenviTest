@@ -330,14 +330,19 @@ void CreateObjectPacket(TenviRegen &regen) {
 	sp.Encode4(regen.id);
 	sp.Encode2(regen.object.id); // npc, mob id
 	sp.Encode1(0);
+
+	if (GetRegion() == TENVI_KRX) {
+		sp.Encode1(0);
+	}
+
 	sp.Encode4(0);
-	sp.Encode1(0);
-	sp.Encode1(0);
+	sp.Encode1(regen.flip); // face right
+	sp.Encode1(0); // fade in
 	sp.Encode4(0);
-	sp.Encode1(0);
+	sp.Encode1(1); //show, if coordinate is far from your character, the object will be invisible
 	sp.Encode2(0);
 	sp.EncodeFloat(regen.area.left);
-	sp.EncodeFloat(regen.area.top);
+	sp.EncodeFloat(regen.area.bottom);
 	sp.Encode2(0);
 	sp.EncodeFloat(regen.area.left);
 	sp.EncodeFloat(regen.area.top);
@@ -345,6 +350,20 @@ void CreateObjectPacket(TenviRegen &regen) {
 	sp.EncodeFloat(regen.area.bottom);
 	sp.Encode1(0);
 	sp.Encode1(0);
+	{
+		/*
+		sp.Encode4(1);
+		sp.Encode2(0);
+		sp.Encode1(1);
+		sp.Encode4(1);
+		sp.Encode4(1337); // character id
+		sp.Encode1(1);
+		*/
+	}
+
+	if (GetRegion() != TENVI_JP) {
+		sp.Encode1(0);
+	}
 	SendPacket(sp);
 }
 
@@ -364,7 +383,7 @@ void ShowObjectPacket(TenviRegen &regen) {
 	sp.Encode1(1);
 	sp.Encode2(0);
 	sp.EncodeFloat(regen.area.left);
-	sp.EncodeFloat(regen.area.top);
+	sp.EncodeFloat(regen.area.bottom);
 	SendPacket(sp);
 }
 
@@ -707,8 +726,8 @@ void ChangeMap(TenviCharacter &chr, WORD map_id, float x, float y) {
 		break;
 	}
 	}
-	CharacterSpawnPacket(chr, x, y);
 	SpawnObjects(chr, map_id);
+	CharacterSpawnPacket(chr, x, y);
 }
 
 // enter map by login or something
