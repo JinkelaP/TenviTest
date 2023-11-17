@@ -2,6 +2,7 @@
 #include"rapidxml/rapidxml_utils.hpp"
 #include"TenviMap.h"
 #include"TenviData.h"
+#include"../EmuMainTenvi/ConfigTenvi.h"
 
 TenviMap::TenviMap(DWORD mapid) {
 	id = mapid;
@@ -64,6 +65,74 @@ bool TenviMap::LoadXML() {
 		}
 	}
 
+	LoadSubXML();
+	return true;
+}
+
+bool TenviMap::LoadSubXML() {
+	std::string mapid_str = (id < 10000) ? ("0" + std::to_string(id)) : std::to_string(id);
+	std::string region_str;
+
+	switch (GetRegion()) {
+	case TENVI_JP:
+	case TENVI_CN:
+	case TENVI_HK: {
+		region_str = "KR";
+		break;
+	}
+	default:
+	{
+		region_str = tenvi_data.get_region_str();
+		break;
+	}
+	}
+
+	std::string map_xml = tenvi_data.get_xml_path() + +"\\" + region_str + "\\npc\\regen\\" + mapid_str + "_0.xml";
+	OutputDebugStringA(("[Maple] subxml = " + map_xml).c_str());
+	rapidxml::xml_document<> doc;
+
+	try {
+		rapidxml::file<> xmlFile(map_xml.c_str());
+		doc.parse<0>(xmlFile.data());
+	}
+	catch (...) {
+		return false;
+	}
+
+	rapidxml::xml_node<>* root = doc.first_node();
+
+	if (!root) {
+		return false;
+	}
+
+	// regen
+	for (rapidxml::xml_node<>* node = root->first_node(); node; node = node->next_sibling()) {
+		TenviRegen regen = {};
+		regen.id = atoi(node->first_attribute("id")->value());
+		regen.flip = atoi(node->first_attribute("flip")->value());
+		regen.population = atoi(node->first_attribute("population")->value());
+
+		for (rapidxml::xml_node<>* child = node->first_node(); child; child = child->next_sibling()) {
+			if (strcmp("area", child->name()) == 0) {
+				regen.area.left = (float)atoi(child->first_attribute("left")->value());
+				regen.area.top = (float)atoi(child->first_attribute("top")->value());
+				regen.area.right = (float)atoi(child->first_attribute("right")->value());
+				regen.area.bottom = (float)atoi(child->first_attribute("bottom")->value());
+				continue;
+			}
+			if (strcmp("id", child->name()) == 0) {
+				regen.object.id = atoi(child->first_attribute("value")->value());
+				//area.id = atoi(child->first_attribute("min")->value());
+				//area.id = atoi(child->first_attribute("max")->value());
+
+				OutputDebugStringA(("[Maple] npc = " + std::string(child->first_attribute("value")->value())).c_str());
+				continue;
+			}
+		}
+
+		AddRegen(regen);
+	}
+
 	return true;
 }
 
@@ -77,6 +146,14 @@ void TenviMap::AddSpawnPoint(TenviSpawnPoint &spawn_point) {
 
 void TenviMap::AddPortal(TenviPortal &portal) {
 	data_portal.push_back(portal);
+}
+
+void TenviMap::AddRegen(TenviRegen &regen) {
+	data_regen.push_back(regen);
+}
+
+std::vector<TenviRegen>& TenviMap::GetRegen() {
+	return data_regen;
 }
 
 TenviSpawnPoint TenviMap::FindSpawnPoint(DWORD id) {

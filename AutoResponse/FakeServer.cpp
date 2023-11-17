@@ -324,6 +324,50 @@ void RemoveObjectPacket(DWORD object_id) {
 	SendPacket(sp);
 }
 
+// 0x14
+void CreateObjectPacket(TenviRegen &regen) {
+	ServerPacket sp(SP_CREATE_OBJECT);
+	sp.Encode4(regen.id);
+	sp.Encode2(regen.object.id); // npc, mob id
+	sp.Encode1(0);
+	sp.Encode4(0);
+	sp.Encode1(0);
+	sp.Encode1(0);
+	sp.Encode4(0);
+	sp.Encode1(0);
+	sp.Encode2(0);
+	sp.EncodeFloat(regen.area.left);
+	sp.EncodeFloat(regen.area.top);
+	sp.Encode2(0);
+	sp.EncodeFloat(regen.area.left);
+	sp.EncodeFloat(regen.area.top);
+	sp.EncodeFloat(regen.area.right);
+	sp.EncodeFloat(regen.area.bottom);
+	sp.Encode1(0);
+	sp.Encode1(0);
+	SendPacket(sp);
+}
+
+// 0x20
+void ActivateObjectPacket(TenviRegen &regen) {
+	ServerPacket sp(SP_ACTIVATE_OBJECT);
+	sp.Encode4(regen.id);
+	sp.Encode1(3); // ?
+	SendPacket(sp);
+}
+
+// 0x23
+void ShowObjectPacket(TenviRegen &regen) {
+	ServerPacket sp(SP_SHOW_OBJECT);
+	sp.Encode4(regen.id);
+	sp.Encode1(1);
+	sp.Encode1(1);
+	sp.Encode2(0);
+	sp.EncodeFloat(regen.area.left);
+	sp.EncodeFloat(regen.area.top);
+	SendPacket(sp);
+}
+
 // 0x3C
 void InMapTeleportPacket(TenviCharacter &chr) {
 	ServerPacket sp(SP_IN_MAP_TELEPORT);
@@ -635,6 +679,14 @@ void BoardPacket(BoardAction action, std::wstring owner = L"", std::wstring msg 
 
 // ========== Functions ==================
 
+void SpawnObjects(TenviCharacter &chr, WORD map_id) {
+	for (auto &regen : tenvi_data.get_map(map_id)->GetRegen()) {
+		CreateObjectPacket(regen);
+		ShowObjectPacket(regen);
+		ActivateObjectPacket(regen);
+	}
+}
+
 // go to map
 void ChangeMap(TenviCharacter &chr, WORD map_id, float x, float y) {
 	ChangeMapPacket(map_id, x, y);
@@ -656,6 +708,7 @@ void ChangeMap(TenviCharacter &chr, WORD map_id, float x, float y) {
 	}
 	}
 	CharacterSpawnPacket(chr, x, y);
+	SpawnObjects(chr, map_id);
 }
 
 // enter map by login or something
