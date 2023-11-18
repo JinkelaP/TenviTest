@@ -13,6 +13,7 @@ private:
 	ServerPacket p;
 
 	bool DataParse(std::wstring data, ULONGLONG &uData);
+	bool DataParseFloat(std::wstring data, float &fData);
 	bool WStrParse(std::wstring data, std::wstring &wData);
 	bool Parse(std::wstring input);
 

@@ -120,6 +120,11 @@ std::wstring GetFormatType(PacketFormat &pf) {
 	{
 		return L"DWORD";
 	}
+	case ENCODEFLOAT:
+	case DECODEFLOAT:
+	{
+		return L"float";
+	}
 	case ENCODE8:
 	case DECODE8:
 	{
@@ -222,6 +227,11 @@ std::wstring GetFormatData(PacketData &pd, PacketFormat &pf) {
 	{
 		return DWORDtoString(*(DWORD *)&pd.packet[pf.pos]);
 	}
+	case ENCODEFLOAT:
+	case DECODEFLOAT:
+	{
+		return DWORDtoString(*(DWORD *)&pd.packet[pf.pos]);
+	}
 	case ENCODE8:
 	case DECODE8:
 	{
@@ -292,6 +302,12 @@ bool GetIntData(PacketData &pd, PacketFormat &pf, int &val) {
 	case DECODE4:
 	{
 		val = (int)(*(signed long int *)&pd.packet[pf.pos]);
+		return true;
+	}
+	case ENCODEFLOAT:
+	case DECODEFLOAT: {
+		// float to int
+		val = (int)(*(float *)&pd.packet[pf.pos]);
 		return true;
 	}
 	default: {
@@ -469,7 +485,7 @@ std::wstring GetFormatType_MySrc(PacketData &pd, PacketFormat &pf) {
 	}
 	case ENCODE1:
 	{
-		return L"p.Decode1" + argpart;
+		return L"cp.Decode1" + argpart;
 	}
 	case DECODE1:
 	{
@@ -477,7 +493,7 @@ std::wstring GetFormatType_MySrc(PacketData &pd, PacketFormat &pf) {
 	}
 	case ENCODE2:
 	{
-		return L"p.Decode2" + argpart;
+		return L"cp.Decode2" + argpart;
 	}
 	case DECODE2:
 	{
@@ -485,15 +501,23 @@ std::wstring GetFormatType_MySrc(PacketData &pd, PacketFormat &pf) {
 	}
 	case ENCODE4:
 	{
-		return L"p.Decode4" + argpart;
+		return L"cp.Decode4" + argpart;
 	}
 	case DECODE4:
 	{
 		return L"Encode4" + argpart;
 	}
+	case ENCODEFLOAT:
+	{
+		return L"cp.DecodeFloat" + argpart;
+	}
+	case DECODEFLOAT:
+	{
+		return L"EncodeFloat" + argpart;
+	}
 	case ENCODE8:
 	{
-		return L"p.Decode8" + argpart;
+		return L"cp.Decode8" + argpart;
 	}
 	case DECODE8:
 	{
@@ -501,7 +525,7 @@ std::wstring GetFormatType_MySrc(PacketData &pd, PacketFormat &pf) {
 	}
 	case ENCODESTR:
 	{
-		return L"p.DecodeStr" + argpart;
+		return L"cp.DecodeStr" + argpart;
 	}
 	case DECODESTR:
 	{
@@ -509,7 +533,7 @@ std::wstring GetFormatType_MySrc(PacketData &pd, PacketFormat &pf) {
 	}
 	case ENCODEBUFFER:
 	{
-		return L"p.DecodeBuffer" + argpart;
+		return L"cp.DecodeBuffer" + argpart;
 	}
 	case DECODEBUFFER:
 	{

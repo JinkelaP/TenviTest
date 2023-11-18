@@ -25,10 +25,10 @@ enum FORMAT_TYPE {
 	TYPE_BYTE,
 	TYPE_WORD,
 	TYPE_DWORD,
+	TYPE_FLOAT,
 	TYPE_WSTR1,
 	TYPE_WSTR2,
 	TYPE_QWORD,
-	TYPE_FLOAT,
 };
 
 bool Frost::DataParse(std::wstring data, ULONGLONG &uData) {
@@ -56,7 +56,31 @@ bool Frost::DataParse(std::wstring data, ULONGLONG &uData) {
 	}
 
 	DEBUG(L"DataParse Fail");
+	return false;
+}
 
+bool Frost::DataParseFloat(std::wstring data, float &fData) {
+	fData = 0;
+	ULONGLONG uData = 0;
+
+	std::wsmatch match;
+	// int
+	if (std::regex_search(data, match, std::wregex(LR"(^\s*(#-)(\d+))")) && match.size() >= 2) {
+		swscanf_s(match[2].str().c_str(), L"%lld", &uData);
+		uData = ~uData + 1;
+		fData = (float)((int)uData);
+		DEBUG(match[2].str());
+		return true;
+	}
+	// int
+	if (std::regex_search(data, match, std::wregex(LR"(^\s*(#)(\d+))")) && match.size() >= 2) {
+		swscanf_s(match[2].str().c_str(), L"%lld", &uData);
+		fData = (float)((int)uData);
+		DEBUG(match[2].str());
+		return true;
+	}
+
+	DEBUG(L"DataParse Fail");
 	return false;
 }
 
@@ -102,6 +126,10 @@ bool Frost::Parse(std::wstring input) {
 		type = TYPE_DWORD;
 		data = match[2];
 	}
+	else if (std::regex_search(input, match, std::wregex(LR"(^\s*(EncodeFloat)\s*\((.*)\))")) && match.size() >= 2) {
+		type = TYPE_FLOAT;
+		data = match[2];
+	}
 	else if (std::regex_search(input, match, std::wregex(LR"(^\s*(Encode8)\s*\((.*)\))")) && match.size() >= 2) {
 		type = TYPE_QWORD;
 		data = match[2];
@@ -119,12 +147,6 @@ bool Frost::Parse(std::wstring input) {
 		return false;
 	}
 
-	/*
-	if (std::regex_search(input, match, std::wregex(LR"(^\s*(EncodeFloat)\s*\((.*)\))")) && match.size() >= 2) {
-		type = TYPE_FLOAT;
-		data = match[2];
-	}
-	*/
 	switch (type) {
 	case TYPE_BYTE:
 	{
@@ -151,6 +173,15 @@ bool Frost::Parse(std::wstring input) {
 			return false;
 		}
 		p.Encode4((DWORD)val);
+		return true;
+	}
+	case TYPE_FLOAT:
+	{
+		float val = 0;
+		if (!DataParseFloat(data, val)) {
+			return false;
+		}
+		p.EncodeFloat(val);
 		return true;
 	}
 	case TYPE_QWORD:

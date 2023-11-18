@@ -47,5 +47,5 @@ void ServerPacket::Encode8(ULONGLONG val) {
 }
 
 void ServerPacket::EncodeFloat(float val) {
-	Encode4((DWORD)val);
+	Encode4(*(DWORD *)&val);
 }

@@ -223,7 +223,7 @@ void __fastcall Encode4_Hook(OutPacket *p, void *edx, DWORD dw) {
 }
 
 void __fastcall EncodeFloat_Hook(OutPacket *p, void *edx, float f) {
-	PacketExtraInformation pxi = { packet_id_out, (ULONG_PTR)_ReturnAddress(), ENCODE4, p->encoded, sizeof(DWORD) };
+	PacketExtraInformation pxi = { packet_id_out, (ULONG_PTR)_ReturnAddress(), ENCODEFLOAT, p->encoded, sizeof(float) };
 	AddExtra(pxi);
 	return _EncodeFloat(p, f);
 }
@@ -296,13 +296,19 @@ DWORD __fastcall Decode4_Hook(InPacket *p, void *edx) {
 	return _Decode4(p);
 }
 
+float(__thiscall *_DecodeFloat)(InPacket *);
+float __fastcall DecodeFloat_Hook(InPacket *p) {
+	PacketExtraInformation pxi = { packet_id_in, (ULONG_PTR)_ReturnAddress(), DECODEFLOAT, p->decoded - 4, sizeof(float) };
+	AddExtra(pxi);
+	return _DecodeFloat(p);
+}
+
 char** __fastcall DecodeStr_Hook(InPacket *p, void *edx, char **s) {
 	PacketExtraInformation pxi = { packet_id_in, (ULONG_PTR)_ReturnAddress(), DECODESTR, p->decoded - 4, sizeof(WORD) + *(WORD *)&p->packet[p->decoded] };
 	AddExtra(pxi);
 	return _DecodeStr(p, s);
 }
 
-// Tenvi
 WCHAR** __fastcall DecodeWStr1_Hook(InPacket *p, void *edx, WCHAR **wc) {
 	PacketExtraInformation pxi = { packet_id_in, (ULONG_PTR)_ReturnAddress(), TENVI_DECODE_WSTR_1, p->decoded - 4, sizeof(BYTE) + p->packet[p->decoded] * 2 };
 	AddExtra(pxi);
@@ -325,13 +331,6 @@ ULONGLONG __fastcall Decode8_Hook(InPacket *p) {
 	PacketExtraInformation pxi = { packet_id_in, (ULONG_PTR)_ReturnAddress(), DECODE8, p->decoded - 4, sizeof(ULONGLONG) };
 	AddExtra(pxi);
 	return _Decode8(p);
-}
-
-float(__thiscall *_DecodeFloat)(InPacket *);
-float __fastcall DecodeFloat_Hook(InPacket *p) {
-	PacketExtraInformation pxi = { packet_id_in, (ULONG_PTR)_ReturnAddress(), DECODE4, p->decoded - 4, sizeof(DWORD) };
-	AddExtra(pxi);
-	return _DecodeFloat(p);
 }
 
 
