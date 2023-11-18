@@ -895,6 +895,13 @@ bool FakeServer(ClientPacket &cp) {
 		BYTE channel = cp.Decode1();
 		return true;
 	}
+	case CP_NPC_TALK: {
+		DWORD object_id = cp.Decode4();
+		DWORD unk2 = cp.Decode4();
+		DWORD npc_type = cp.Decode4();
+		DWORD unk3 = cp.Decode4();
+		return true;
+	}
 	case CP_PLAYER_CHAT: {
 		BYTE type = cp.Decode1(); // 0 = map chat
 		cp.Decode1(); // 1

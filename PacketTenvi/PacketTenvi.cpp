@@ -51,6 +51,7 @@ void(__thiscall *_COutPacket)(OutPacket *p, BYTE b, void *v);
 void(__thiscall *_Encode1)(OutPacket *p, BYTE b);
 void(__thiscall *_Encode2)(OutPacket *p, WORD w);
 void(__thiscall *_Encode4)(OutPacket *p, DWORD dw);
+void(__thiscall *_EncodeFloat)(OutPacket *p, float f);
 void(__thiscall *_EncodeStr)(OutPacket *p, char *s);
 void(__thiscall *_EncodeWStr1)(OutPacket *p, WCHAR *wc);
 void(__thiscall *_EncodeBuffer)(OutPacket *p, BYTE *b, DWORD len);
@@ -219,6 +220,12 @@ void __fastcall Encode4_Hook(OutPacket *p, void *edx, DWORD dw) {
 	PacketExtraInformation pxi = { packet_id_out, (ULONG_PTR)_ReturnAddress(), ENCODE4, p->encoded, sizeof(DWORD) };
 	AddExtra(pxi);
 	return _Encode4(p, dw);
+}
+
+void __fastcall EncodeFloat_Hook(OutPacket *p, void *edx, float f) {
+	PacketExtraInformation pxi = { packet_id_out, (ULONG_PTR)_ReturnAddress(), ENCODE4, p->encoded, sizeof(DWORD) };
+	AddExtra(pxi);
+	return _EncodeFloat(p, f);
 }
 
 void __fastcall EncodeStr_Hook(OutPacket *p, void *edx, char *s) {
@@ -421,6 +428,7 @@ bool PacketHook() {
 		SHookFunction(Encode1, 0x0040F287);
 		SHookFunction(Encode2, 0x00402FFD);
 		SHookFunction(Encode4, 0x00403025);
+		SHookFunction(EncodeFloat, 0x0041414B);
 		SHookFunction(EncodeWStr1, 0x0040F435);
 		SHookFunction(DecodeHeader, 0x0055F357);
 		SHookFunction(Decode1, 0x00402EFE);

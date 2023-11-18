@@ -19,9 +19,11 @@ void SetClientPacketHeader_JP_v127() {
 	header[CP_TUTORIAL_LEAVE] = 0x21;
 	header[CP_WORLD_MAP_OPEN] = 0x23;
 	header[CP_ITEM_SHOP] = 0x38;
+	header[CP_PLAYER_HIT] = 0x43, // mob damage
 	header[CP_USE_SP] = 0x45;
 	header[CP_USE_PORTAL] = 0x4E;
 	header[CP_CHANGE_CHANNEL] = 0x50;
+	header[CP_NPC_TALK] = 0x53;
 	header[CP_PLAYER_CHAT] = 0x55;
 	header[CP_FRIEND_REQUEST] = 0x74;
 	header[CP_ITEM_SHOP_OPERATION] = 0xAE;
