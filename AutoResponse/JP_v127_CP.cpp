@@ -13,10 +13,10 @@ void SetClientPacketHeader_JP_v127() {
 	header[CP_LOGOUT] = 0x09;
 	header[CP_PLAYER_MOVEMENT] = 0x0C;
 	header[CP_DROP_COIN] = 0x11;
-	// 0x18 guardian on off?
+	header[CP_GUARDIAN_RIDE] = 0x18;
 	header[CP_GUARDIAN_MOVEMENT] = 0x19;
 	header[CP_USE_AP] = 0x1A;
-	// 0x1B guardian summon
+	header[CP_GUARDIAN_SUMMON] = 0x1B;
 	header[CP_EMOTION] = 0x1C;
 	header[CP_UPDATE_PROFILE] = 0x20;
 	header[CP_TUTORIAL_LEAVE] = 0x21;

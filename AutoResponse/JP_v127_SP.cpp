@@ -30,6 +30,7 @@ void SetServerPacketHeader_JP_v127() {
 	header[SP_PLAYER_STAT_SP] = 0x45;
 	header[SP_PLAYER_STAT_AP] = 0x46;
 	header[SP_PLAYER_STAT_ALL] = 0x47;
+	header[SP_GUARDIAN_SUMMON] = 0x4A,
 	header[SP_EMOTION] = 0x4B;
 	header[SP_WORLD_MAP_UPDATE] = 0x54;
 	header[SP_PLAYER_REVIVE] = 0x5B,

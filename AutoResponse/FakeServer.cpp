@@ -572,6 +572,14 @@ void PlayerStatPacket(TenviCharacter &chr) {
 	SendPacket(sp);
 }
 
+// 0x4A
+void GuardianSummonPacket(TenviCharacter &chr, bool bSummon) {
+	ServerPacket sp(SP_GUARDIAN_SUMMON);
+	sp.Encode4(chr.id);
+	sp.Encode1(bSummon ? 0x01 : 0x00);
+	SendPacket(sp);
+}
+
 // 0x4B
 void EmotionPacket(TenviCharacter &chr, BYTE emotion) {
 	ServerPacket sp(SP_EMOTION);
@@ -854,12 +862,21 @@ bool FakeServer(ClientPacket &cp) {
 		CharacterListPacket_Test();
 		return true;
 	}
+	case CP_GUARDIAN_RIDE: {
+		cp.Decode1(); // on off
+		return true;
+	}
 	case CP_USE_AP: {
 		TenviCharacter &chr = TA.GetOnline();
 		BYTE stat = cp.Decode1();
 		chr.UseAP(stat);
 		PlayerAPPacket(chr);
 		PlayerStatPacket(chr);
+		return true;
+	}
+	case CP_GUARDIAN_SUMMON: {
+		BYTE flag = cp.Decode1(); // on off
+		GuardianSummonPacket(TA.GetOnline(), flag ? true : false);
 		return true;
 	}
 	case CP_EMOTION: {
@@ -902,6 +919,7 @@ bool FakeServer(ClientPacket &cp) {
 	case CP_PLAYER_REVIVE: {
 		//cp.Decode1();
 		PlayerRevivePacket(TA.GetOnline());
+		return true;
 	}
 	case CP_CHANGE_CHANNEL: {
 		BYTE channel = cp.Decode1();
