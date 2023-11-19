@@ -625,6 +625,14 @@ void WorldMapUpdatePacketTest(BYTE area_code) {
 }
 
 
+// 0x5B
+void PlayerRevivePacket(TenviCharacter &chr) {
+	ServerPacket sp(SP_PLAYER_REVIVE);
+	sp.Encode4(chr.id);
+	SendPacket(sp);
+}
+
+
 // 0x5C
 void EnterItemShopErrorPacket() {
 	ServerPacket sp(SP_ITEM_SHOP_ERROR);
@@ -890,6 +898,10 @@ bool FakeServer(ClientPacket &cp) {
 		// cp.DecodeWStr1();
 		UsePortal(chr, portal_id);
 		return true;
+	}
+	case CP_PLAYER_REVIVE: {
+		//cp.Decode1();
+		PlayerRevivePacket(TA.GetOnline());
 	}
 	case CP_CHANGE_CHANNEL: {
 		BYTE channel = cp.Decode1();

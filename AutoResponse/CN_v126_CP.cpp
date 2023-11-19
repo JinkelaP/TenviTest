@@ -11,7 +11,6 @@ void SetClientPacketHeader_CN_v126() {
 	header[CP_INVITED] = 0x07;
 	header[CP_BACK_TO_LOGIN_SERVER] = 0x0A;
 	header[CP_LOGOUT] = 0x09;
-	header[CP_PLAYER_MOVE] = 0x19;
 	header[CP_USE_AP] = 0x1A;
 	header[CP_EMOTION] = 0x1C;
 	header[CP_WORLD_MAP_OPEN] = 0x23;

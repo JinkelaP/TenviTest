@@ -32,6 +32,7 @@ void SetServerPacketHeader_JP_v127() {
 	header[SP_PLAYER_STAT_ALL] = 0x47;
 	header[SP_EMOTION] = 0x4B;
 	header[SP_WORLD_MAP_UPDATE] = 0x54;
+	header[SP_PLAYER_REVIVE] = 0x5B,
 	header[SP_ITEM_SHOP_ERROR] = 0x5C;
 	header[SP_UPDATE_SKILL] = 0x66;
 	header[SP_PLAYER_SKILL_ALL] = 0x6D;

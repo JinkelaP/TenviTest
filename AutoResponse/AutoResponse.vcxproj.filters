@@ -39,12 +39,6 @@
     <ClCompile Include="FakeServer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="ClientPacket.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="ServerPacket.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="TemporaryData.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -87,6 +81,12 @@
     <ClCompile Include="TenviData.cpp">
       <Filter>ソース ファイル\data</Filter>
     </ClCompile>
+    <ClCompile Include="ClientPacket.cpp">
+      <Filter>ソース ファイル\packet</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerPacket.cpp">
+      <Filter>ソース ファイル\packet</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AutoResponse.h">
@@ -95,13 +95,7 @@
     <ClInclude Include="FakeServer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="ClientPacket.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="TenviPacket.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="ServerPacket.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="TemporaryData.h">
@@ -127,6 +121,12 @@
     </ClInclude>
     <ClInclude Include="TenviData.h">
       <Filter>ヘッダー ファイル\data</Filter>
+    </ClInclude>
+    <ClInclude Include="ClientPacket.h">
+      <Filter>ヘッダー ファイル\packet</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerPacket.h">
+      <Filter>ヘッダー ファイル\packet</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -12,7 +12,6 @@ void SetClientPacketHeader_HK_v102() {
 	header[CP_BACK_TO_LOGIN_SERVER] = 0x0A;
 	header[CP_LOGOUT] = 0x09;
 	header[CP_DROP_COIN] = 0x11;
-	header[CP_PLAYER_MOVE] = 0x19;
 	header[CP_USE_AP] = 0x1A;
 	header[CP_EMOTION] = 0x1C;
 	header[CP_UPDATE_PROFILE] = 0x20;
