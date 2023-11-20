@@ -22,6 +22,7 @@ void SetServerPacketHeader_JP_v127() {
 	header[SP_REMOVE_OBJECT] = 0x12;
 	header[SP_CREATE_OBJECT] = 0x14;
 	header[SP_ACTIVATE_OBJECT] = 0x20;
+	header[SP_HIT] = 0x21;
 	header[SP_SHOW_OBJECT] = 0x23;
 	header[SP_IN_MAP_TELEPORT] = 0x3C;
 	header[SP_ACCOUNT_DATA] = 0x3D;

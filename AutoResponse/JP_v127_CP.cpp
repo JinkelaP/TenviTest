@@ -22,7 +22,7 @@ void SetClientPacketHeader_JP_v127() {
 	header[CP_TUTORIAL_LEAVE] = 0x21;
 	header[CP_WORLD_MAP_OPEN] = 0x23;
 	header[CP_ITEM_SHOP] = 0x38;
-	// 0x43 player hit or mob hit
+	header[CP_HIT] = 0x43,
 	// 0x44 use skill
 	header[CP_USE_SP] = 0x45;
 	// 0x46 skill effect or skill charge
