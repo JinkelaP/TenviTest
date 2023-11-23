@@ -502,6 +502,23 @@ void AccountDataPacket(TenviCharacter &chr) {
 	SendPacket(sp);
 }
 
+// 0x41
+void PlayerHitPacket(TenviCharacter &chr) {
+	ServerPacket sp(SP_PLAYER_HIT);
+	sp.Encode4(1); // 0048693A
+	sp.Encode4(chr.id); // 00486941
+	sp.Encode4(0); // 0045D825, 0 or 4,8 (“_–Å)
+	sp.Encode2(0); // 0045D82F
+	sp.Encode1(1); // 0045D83C, hit count
+	sp.Encode2(1337); // 0045D84D, damage
+	sp.Encode2(0); // 0045D865
+	sp.Encode1(0); // 0045D872
+	sp.Encode1(0); // 0045D87F
+	sp.Encode2(0); // 0045D88C
+	sp.Encode1(0); // 0045D899
+	SendPacket(sp);
+}
+
 // 0x42
 void PlayerLevelUpPacket(TenviCharacter &chr) {
 	ServerPacket sp(SP_PLAYER_LEVEL_UP);
@@ -928,6 +945,12 @@ bool FakeServer(ClientPacket &cp) {
 		if (chr.id != hit_to) {
 			HitPacket(hit_from, hit_to);
 			RemoveObjectPacket(hit_to);
+			return true;
+		}
+
+		if (hit_to == chr.id) {
+			PlayerHitPacket(chr);
+			return true;
 		}
 
 		return true;
