@@ -31,6 +31,7 @@ void SetClientPacketHeader_JP_v127() {
 	header[CP_USE_PORTAL] = 0x4E;
 	header[CP_PLAYER_REVIVE] = 0x4F,
 	header[CP_CHANGE_CHANNEL] = 0x50;
+	// all object?
 	header[CP_NPC_MOVEMENT] = 0x52;
 	header[CP_NPC_TALK] = 0x53;
 	header[CP_PLAYER_CHAT] = 0x55;

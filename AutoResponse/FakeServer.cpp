@@ -371,7 +371,7 @@ void CreateObjectPacket(TenviRegen &regen) {
 void ActivateObjectPacket(TenviRegen &regen) {
 	ServerPacket sp(SP_ACTIVATE_OBJECT);
 	sp.Encode4(regen.id);
-	sp.Encode1(3); // ?
+	sp.Encode1(3); // 1 = fade in, 2 = !, 3 = walk, 4 = dash
 	SendPacket(sp);
 }
 
@@ -380,10 +380,11 @@ void HitPacket(DWORD hit_from, DWORD hit_to) {
 	ServerPacket sp(SP_HIT);
 	sp.Encode4(hit_from); // 004867C1
 	sp.Encode4(hit_to); // 004867C8
-	sp.Encode1(0); // 00470977
+	sp.Encode1(0); // 00470977, Knock back
 	sp.Encode4(0); // 00470984
 	sp.Encode2(0); // 0047098E
-	sp.Encode1(0); // 0047099B
+	sp.Encode1(1); // 0047099B, hit count
+	sp.Encode4(1337); // 004709AC, damage
 	sp.Encode1(0); // 004709C1
 	sp.Encode1(0); // 004709CE
 	sp.Encode1(0); // 004709DB
